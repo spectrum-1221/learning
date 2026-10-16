@@ -135,12 +135,16 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 .tab svg{width:26px;height:26px}
 .tab[aria-current="page"]{color:var(--brand);background:var(--brand-soft)}
 
+
+.tiles.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tile.b{--soft:var(--brand-soft);--acc:var(--brand)}
 @media (min-width:860px){
   .shell{display:grid;grid-template-columns:268px minmax(0,1fr)}
   .side{display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 16px;background:var(--card);border-right:2px solid var(--line)}
   .tabs{display:none}
   .main{padding-top:26px;padding-bottom:56px;padding-left:36px;padding-right:36px}
   .tiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .tiles.two{grid-template-columns:repeat(3,minmax(0,1fr))}
   .ls{grid-template-columns:repeat(3,minmax(0,1fr))}
   .top h1{font-size:38px}
   #themebtn{display:none}
@@ -177,7 +181,7 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
     <nav class="sg" aria-label="Menu utama">
       <h3>Menu</h3>
       <a class="si" href="#beranda" data-p="beranda"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Beranda</a>
-      <a class="si" href="#belajar" data-p="belajar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg>Belajar</a>
+      <a class="si" href="#inggris" data-p="inggris"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg>Inggris</a>
       <a class="si" href="#kuis" data-p="kuis"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7"/><path d="M12 17h.01"/></svg>Kuis</a>
       <a class="si" href="#progres" data-p="progres"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>Progres</a>
     </nav>
@@ -187,6 +191,15 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
       <a class="si" data-s="read" href="ayo-belajar.html#read"><span class="dot"></span>Membaca</a>
       <a class="si" data-s="write" href="ayo-belajar.html#write"><span class="dot"></span>Menulis</a>
       <a class="si" data-s="eng" href="ayo-belajar.html#eng"><span class="dot"></span>Bahasa Inggris</a>
+    </nav>
+    <nav class="sg" aria-label="Pojok Bahasa Inggris">
+      <h3>Pojok Bahasa Inggris</h3>
+      <a class="si" data-s="eng" href="modul-inggris.html"><span class="dot"></span>Modul belajar</a>
+      <a class="si" data-s="eng" href="inggris.html#alfabet"><span class="dot"></span>Alfabet</a>
+      <a class="si" data-s="eng" href="inggris.html#kartu"><span class="dot"></span>Kartu kilat</a>
+      <a class="si" data-s="eng" href="inggris.html#cocok"><span class="dot"></span>Cocokkan</a>
+      <a class="si" data-s="eng" href="inggris.html#cakap"><span class="dot"></span>Percakapan</a>
+      <a class="si" data-s="eng" href="inggris.html#kamus"><span class="dot"></span>Kamus gambar</a>
     </nav>
     <div class="sfoot">
       <button class="pill" id="inst" hidden>Pasang di layar HP</button>
@@ -203,7 +216,7 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
       </header>
       <main>
         <section id="p-beranda"></section>
-        <section id="p-belajar" hidden></section>
+        <section id="p-inggris" hidden></section>
         <section id="p-kuis" hidden></section>
         <section id="p-progres" hidden></section>
       </main>
@@ -212,12 +225,13 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 
   <nav class="tabs" aria-label="Menu bawah">
     <a class="tab" href="#beranda" data-p="beranda"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Beranda</a>
-    <a class="tab" href="#belajar" data-p="belajar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg>Belajar</a>
+    <a class="tab" href="#inggris" data-p="inggris"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg>Inggris</a>
     <a class="tab" href="#kuis" data-p="kuis"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7"/><path d="M12 17h.01"/></svg>Kuis</a>
     <a class="tab" href="#progres" data-p="progres"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>Progres</a>
   </nav>
 </div>
 
+<script src="kata.js"></script>
 <script>
 (function(){
 'use strict';
@@ -238,12 +252,15 @@ var SUBJ=[
   ['e-gambar','Gambar ke kata'],['e-dengar','Dengar & pilih'],['e-eja','Eja kata'],['e-arti','Arti kata']]}
 ];
 var CH=[['salam','Salam'],['angka','Angka 1 sampai 10'],['warna','Warna'],['hewan','Hewan'],['makanan','Buah dan makanan'],['tubuh','Anggota tubuh'],['keluarga','Keluarga'],['sekolah','Benda di sekolah'],['hari','Nama hari'],['kalimat','Kalimat pertamaku']];
-var TITLES={beranda:'Beranda',belajar:'Belajar',kuis:'Kuis',progres:'Progres'};
-var PANELS=['beranda','belajar','kuis','progres'];
+var TITLES={beranda:'Beranda',inggris:'Bahasa Inggris',kuis:'Kuis',progres:'Progres'};
+var PANELS=['beranda','inggris','kuis','progres'];
 
-var best={},done={};
+var best={},done={},known={};
+var K=window.KATA||{topics:[]};
 function b(id){return best[id]||0}
 function stat(s){var g=0;s.modes.forEach(function(m){g+=b(m[0])});return {g:g,t:s.modes.length*3}}
+function wordsTotal(){var n=0;K.topics.forEach(function(t){n+=t.items.length});return n}
+function wordsKnown(){var n=0;K.topics.forEach(function(t){t.items.forEach(function(w){if(known[t.id+':'+w[0]])n++})});return n}
 function chDone(){var n=0;CH.forEach(function(c){if(done[c[0]])n++});return n}
 var STAR_PTS='12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26';
 function star(on){return '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="'+STAR_PTS+'" class="'+(on?'st-on':'st-off')+'" stroke-linejoin="round"/></svg>'}
@@ -258,7 +275,7 @@ function suggest(){
 
 function renderBeranda(){
   var h='<div class="hello"><p class="k">Selamat belajar</p><h2>Halo! Mau belajar apa hari ini?</h2></div><div class="tiles">';
-  h+='<a class="tile" data-s="eng" href="modul-inggris.html"><span class="g">Hi!</span><b>Modul Bahasa Inggris</b><span class="pr">'+chDone()+' dari '+CH.length+' bab selesai</span>'+meter(chDone(),CH.length)+'</a>';
+  h+='<a class="tile" data-s="eng" href="#inggris"><span class="g">Hi!</span><b>Bahasa Inggris</b><span class="pr">'+wordsKnown()+' kata &middot; '+chDone()+' bab</span>'+meter(wordsKnown(),wordsTotal())+'</a>';
   SUBJ.slice(0,3).forEach(function(s){
     var st=stat(s);
     h+='<a class="tile" data-s="'+s.id+'" href="ayo-belajar.html#'+s.id+'"><span class="g" aria-hidden="true">'+esc(s.glyph)+'</span><b>Kuis '+esc(s.name)+'</b><span class="pr">'+st.g+' dari '+st.t+' bintang</span>'+meter(st.g,st.t)+'</a>';
@@ -272,15 +289,23 @@ function renderBeranda(){
   }
   $('#p-beranda').innerHTML=h;
 }
-function renderBelajar(){
+function renderInggris(){
+  var wk=wordsKnown(),wt=wordsTotal();
+  var G=[['alfabet','A-Z','Alfabet','Huruf dan bunyinya'],['kartu','Flip','Kartu kilat','Balik kartu, tandai yang sudah bisa'],['cocok','Pair','Cocokkan','Pasangkan gambar dan kata'],['cakap','Chat','Percakapan','Dengar dan tirukan'],['kamus','Aa','Kamus gambar','Cari kata, dengar suaranya']];
   var h='<div class="sec"><a class="hero" data-s="eng" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><b>Modul Bahasa Inggris</b><span>Kartu kata bergambar, suara, kalimat contoh, dan cek paham di setiap bab.</span>'+meter(chDone(),CH.length)+'<span>'+chDone()+' dari '+CH.length+' bab selesai</span></a></div>';
-  h+='<div class="sec" data-s="eng"><h2>Pilih bab</h2><ul class="rows">';
+  h+='<div class="sec" data-s="eng"><h2>Permainan dan latihan</h2><div class="tiles two">';
+  G.forEach(function(g){h+='<a class="tile b" href="inggris.html#'+g[0]+'"><span class="g" aria-hidden="true">'+g[1]+'</span><b>'+g[2]+'</b><span class="pr">'+g[3]+'</span></a>'});
+  h+='</div><div class="card" style="margin-top:12px"><b>Kata yang sudah bisa</b><div class="big" style="font-size:30px;margin:4px 0 8px">'+wk+' <small>dari '+wt+' kata</small></div>'+meter(wk,wt)+'<p class="note">Tandai kata di Kartu kilat dengan tombol "Sudah bisa".</p></div></div>';
+  h+='<div class="sec" data-s="eng"><h2>Kuis bahasa Inggris</h2><ul class="rows">';
+  SUBJ[3].modes.forEach(function(m){h+='<li><a class="row" href="ayo-belajar.html#'+m[0]+'"><span class="t">'+esc(m[1])+'</span>'+rate(b(m[0]))+'</a></li>'});
+  h+='</ul></div>';
+  h+='<div class="sec" data-s="eng"><h2>Bab modul</h2><ul class="rows">';
   CH.forEach(function(c,i){
     var ok=!!done[c[0]];
-    h+='<li><a class="row'+(ok?' ok':'')+'" href="modul-inggris.html#'+c[0]+'"><span class="n">'+(ok?'✓':(i+1))+'</span><span class="t">'+esc(c[1])+'</span><span class="s">'+(ok?'Selesai':'Belum')+'</span></a></li>';
+    h+='<li><a class="row'+(ok?' ok':'')+'" href="modul-inggris.html#'+c[0]+'"><span class="n">'+(ok?'\u2713':(i+1))+'</span><span class="t">'+esc(c[1])+'</span><span class="s">'+(ok?'Selesai':'Belum')+'</span></a></li>';
   });
   h+='</ul></div>';
-  $('#p-belajar').innerHTML=h;
+  $('#p-inggris').innerHTML=h;
 }
 function renderKuis(){
   var h='';
@@ -296,7 +321,8 @@ function renderProgres(){
   var g=0,t=0;SUBJ.forEach(function(s){var st=stat(s);g+=st.g;t+=st.t});
   var h='<div class="card"><div class="big">'+g+' <small>dari '+t+' bintang</small></div>'+meter(g,t);
   SUBJ.forEach(function(s){var st=stat(s);h+='<div class="pbar" data-s="'+s.id+'"><b>'+esc(s.name)+'</b>'+meter(st.g,st.t)+'<span>'+st.g+'/'+st.t+'</span></div>'});
-  h+='<div class="pbar" data-s="eng"><b>Modul Inggris</b>'+meter(chDone(),CH.length)+'<span>'+chDone()+'/'+CH.length+' bab</span></div></div>';
+  h+='<div class="pbar" data-s="eng"><b>Modul Inggris</b>'+meter(chDone(),CH.length)+'<span>'+chDone()+'/'+CH.length+' bab</span></div>';
+  h+='<div class="pbar" data-s="eng"><b>Kata Inggris</b>'+meter(wordsKnown(),wordsTotal())+'<span>'+wordsKnown()+'/'+wordsTotal()+'</span></div></div>';
   var redo=[];
   SUBJ.forEach(function(s){s.modes.forEach(function(m){if(b(m[0])<2)redo.push({s:s,m:m,v:b(m[0])})})});
   redo.sort(function(a,c){return a.v-c.v});
@@ -313,13 +339,15 @@ function renderProgres(){
 function renderAll(){
   best=load('ayo-belajar-kelas2').best||{};
   done=load('modul-inggris-kelas2')||{};
+  known=load('inggris-kelas2').known||{};
   var g=0,t=0;SUBJ.forEach(function(s){var st=stat(s);g+=st.g;t+=st.t});
   $('#starpill').innerHTML=star(true)+g+' / '+t;
-  renderBeranda();renderBelajar();renderKuis();renderProgres();
+  renderBeranda();renderInggris();renderKuis();renderProgres();
 }
 
 function route(){
   var h=(location.hash||'').replace('#','');
+  if(h==='belajar')h='inggris';
   if(PANELS.indexOf(h)<0)h='beranda';
   PANELS.forEach(function(p){$('#p-'+p).hidden=(p!==h)});
   var links=document.querySelectorAll('[data-p]');

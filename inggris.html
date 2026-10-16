@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pojok Bahasa Inggris</title>
+<meta name="theme-color" content="#4A47E0">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap">
+<script>
+try{var th=localStorage.getItem('belajar-theme');if(th==='dark'||th==='light')document.documentElement.setAttribute('data-theme',th)}catch(e){}
+</script>
+<style>
+/* Layout: satu kolom. Atas: tautan kembali dan judul. Lalu deretan penanda untuk pindah permainan, lalu satu permainan memenuhi layar. */
+:root{
+  --bg:#F5F2FC;--card:#FFFFFF;--ink:#1E1938;--muted:#5A547C;--line:#DDD6F0;--on:#FFFFFF;
+  --acc:#6D32D1;--acc-soft:#E8DEFF;--amber:#F29D00;--amber-soft:#FFEBC2;
+  --good:#0E7F5A;--good-soft:#D5F3E6;--bad:#CC3329;--bad-soft:#FFE2DF;--star:#F5B000;
+  --fd:'Fredoka','Baloo 2',ui-rounded,'Trebuchet MS',system-ui,sans-serif;
+  --fb:'Nunito','Segoe UI',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#16122B;--card:#211B40;--ink:#F0ECFF;--muted:#ADA6D0;--line:#382F63;--on:#16122B;
+    --acc:#B796FF;--acc-soft:#33275E;--amber:#FFB43A;--amber-soft:#4A3A12;
+    --good:#55D6A5;--good-soft:#143F39;--bad:#FF8479;--bad-soft:#4B2522;--star:#FFC933;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16122B;--card:#211B40;--ink:#F0ECFF;--muted:#ADA6D0;--line:#382F63;--on:#16122B;
+  --acc:#B796FF;--acc-soft:#33275E;--amber:#FFB43A;--amber-soft:#4A3A12;
+  --good:#55D6A5;--good-soft:#143F39;--bad:#FF8479;--bad-soft:#4B2522;--star:#FFC933;color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:700 17px/1.55 var(--fb);
+  padding-top:max(18px,env(safe-area-inset-top,0px));padding-bottom:calc(48px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,p{margin:0}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.wrap{max-width:760px;margin:0 auto;min-width:0}
+.head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.back{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:99px;background:var(--card);border:2px solid var(--line);text-decoration:none;font-weight:800;font-size:15px;flex:none}
+.head h1{font:700 30px/1.1 var(--fd);min-width:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 10px;scroll-snap-type:x proximity}
+.chip{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:99px;background:var(--card);border:2px solid var(--line);text-decoration:none;font-weight:800;font-size:15px;scroll-snap-align:start}
+.chip[aria-current="page"]{background:var(--acc);border-color:var(--acc);color:var(--on)}
+.panel{background:var(--card);border:2px solid var(--line);border-radius:28px;padding:18px 16px 22px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.panel h2{font:700 30px/1.15 var(--fd)}
+.lead{color:var(--muted)}
+.btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:14px;font:600 18px var(--fd);background:var(--acc);color:var(--on);text-align:center}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.btn.alt{background:var(--card);color:var(--ink);border:3px solid var(--line)}
+.btn.good{background:var(--good);color:#fff}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:22px;height:22px;fill:currentColor;flex:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.note{font-size:14px;color:var(--muted)}
+.tabs2{display:flex;gap:8px;flex-wrap:wrap}
+.tp{all:unset;box-sizing:border-box;cursor:pointer;min-height:44px;padding:0 14px;border-radius:99px;border:2px solid var(--line);background:var(--bg);font-weight:800;font-size:15px;display:inline-flex;align-items:center}
+.tp:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.tp[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--on)}
+
+/* menu */
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;gap:4px;padding:16px;border-radius:22px;background:var(--acc-soft);text-decoration:none;min-width:0}
+.tile .g{font:700 34px/1 var(--fd);color:var(--acc);min-height:40px;overflow-wrap:anywhere}
+.tile b{font:600 20px/1.2 var(--fd)}
+.tile span.s{font-size:14px;color:var(--muted)}
+
+/* alfabet */
+.alpha{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.lt{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0;padding:10px 6px;border-radius:18px;border:2px solid var(--line);background:var(--bg);text-align:center;min-width:0}
+.lt:hover{border-color:var(--acc)}
+.lt:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.lt.on{background:var(--acc-soft);border-color:var(--acc)}
+.lt .L{font:700 34px/1.1 var(--fd);color:var(--acc)}
+.lt .e{font-size:30px;line-height:1.2}
+.lt .w{font-size:14px;font-weight:800;overflow-wrap:anywhere}
+.lt .m{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+
+/* kartu kilat */
+.fc{all:unset;box-sizing:border-box;cursor:pointer;width:100%;min-height:260px;border-radius:26px;border:3px solid var(--acc);background:var(--acc-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:20px 14px;text-align:center}
+.fc:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.fc .pic{font-size:110px;line-height:1.1}
+.fc .pic.txt{font:700 84px/1.1 var(--fd);color:var(--acc);overflow-wrap:anywhere}
+.fc .en{font:700 46px/1.15 var(--fd);overflow-wrap:anywhere}
+.fc .ph{font-weight:800;color:var(--acc);background:var(--card);padding:2px 14px;border-radius:99px;font-size:17px}
+.fc .id{color:var(--muted);font-size:20px}
+.fc .hint{color:var(--muted);font-size:14px}
+.meter{display:block;height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width .3s}
+.res{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;padding:12px 0}
+.res h3{font:700 28px/1.2 var(--fd)}
+.stars{display:flex;gap:6px}
+.stars svg{width:60px;height:60px}
+.st-on{fill:var(--star)}.st-off{fill:var(--line)}
+
+/* cocokkan */
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.mc{all:unset;box-sizing:border-box;cursor:pointer;aspect-ratio:1/1.05;border-radius:16px;border:3px solid var(--line);background:var(--acc);color:var(--on);display:flex;align-items:center;justify-content:center;text-align:center;padding:4px;min-width:0;font:600 20px/1.15 var(--fd);overflow-wrap:anywhere}
+.mc:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.mc.open{background:var(--card);color:var(--ink);border-color:var(--acc)}
+.mc.pic{font-size:44px}
+.mc.pic.txt{font:700 30px/1 var(--fd)}
+.mc.done{background:var(--good-soft);border-color:var(--good);color:var(--ink);cursor:default}
+.mc .q{font-size:30px;opacity:.9}
+.stat{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:800}
+
+/* percakapan */
+.bubbles{display:flex;flex-direction:column;gap:10px}
+.bb{all:unset;box-sizing:border-box;cursor:pointer;max-width:92%;padding:12px 16px;border-radius:20px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.bb:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.bb.l{align-self:flex-start;background:var(--acc-soft);border-bottom-left-radius:6px}
+.bb.r{align-self:flex-end;background:var(--amber-soft);border-bottom-right-radius:6px}
+.bb.on{outline:3px solid var(--acc)}
+.bb small{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bb .e{font:600 22px/1.3 var(--fd);overflow-wrap:anywhere}
+.bb .i{font-size:15px;color:var(--muted)}
+
+/* kamus */
+.search{width:100%;min-height:52px;padding:0 16px;border-radius:16px;border:3px solid var(--line);background:var(--bg);font-size:18px}
+.dict{display:grid;gap:8px;list-style:none;padding:0;margin:0}
+.dr{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:16px;border:2px solid var(--line);background:var(--bg);min-height:62px}
+.dr:hover{border-color:var(--acc)}
+.dr:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.dr .p{flex:none;width:44px;text-align:center;font-size:32px;line-height:1.1}
+.dr .p.txt{font:700 20px var(--fd);color:var(--acc)}
+.dr .t{flex:1;min-width:0}
+.dr .t b{display:block;font:600 21px/1.2 var(--fd);overflow-wrap:anywhere}
+.dr .t span{font-size:14px;color:var(--muted)}
+.dr .sp{flex:none;width:40px;height:40px;border-radius:50%;background:var(--acc);color:var(--on);display:grid;place-items:center}
+.dr .sp svg{width:20px;height:20px;fill:currentColor}
+.nosound{background:var(--amber-soft);border-radius:14px;padding:10px 14px;font-size:15px}
+
+@media (max-width:480px){
+  .head h1{font-size:26px}
+  .fc .pic{font-size:92px}
+  .fc .en{font-size:38px}
+  .mc.pic{font-size:36px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head"><a class="back" href="index.html#inggris">&larr; Menu</a><h1>Pojok Bahasa Inggris</h1></header>
+  <nav class="chips" id="nav" aria-label="Pilih kegiatan"></nav>
+  <main id="view" class="panel"></main>
+</div>
+<script src="kata.js"></script>
+<script>
+(function(){
+'use strict';
+var K=window.KATA;
+var $=function(s){return document.querySelector(s)};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+var shuffle=function(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a};
+
+/* penyimpanan: kata yang sudah dikuasai dan skor terbaik cocokkan */
+var KEY='inggris-kelas2';
+var store={known:{},match:{}};
+try{var raw=JSON.parse(localStorage.getItem(KEY));if(raw){store.known=raw.known||{};store.match=raw.match||{}}}catch(e){}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
+
+/* suara */
+var canSpeak=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
+function say(list,onEach,onEnd){
+  if(!canSpeak)return;
+  if(typeof list==='string')list=[list];
+  try{
+    speechSynthesis.cancel();
+    list.forEach(function(t,i){
+      var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.8;
+      u.onstart=function(){if(onEach)onEach(i)};
+      if(i===list.length-1&&onEnd)u.onend=onEnd;
+      speechSynthesis.speak(u);
+    });
+  }catch(e){}
+}
+var SPK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+var STAR_PTS='12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26';
+function stars(n){var h='<div class="stars" role="img" aria-label="'+n+' dari 3 bintang">';for(var i=0;i<3;i++)h+='<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="'+STAR_PTS+'" class="'+(i<n?'st-on':'st-off')+'" stroke-linejoin="round"/></svg>';return h+'</div>'}
+var NOSND='<p class="nosound">Perangkat ini belum bisa mengeluarkan suara. Minta orang tua membacakan kata-katanya, lalu tirukan bersama.</p>';
+
+function topic(id){var r=null;K.topics.forEach(function(t){if(t.id===id)r=t});return r}
+function kk(t,w){return t.id+':'+w[0]}
+function picHtml(t,w,cls){return '<span class="'+cls+(t.text?' txt':'')+'" aria-hidden="true">'+esc(w[2])+'</span>'}
+function topicPills(cur,act,only){
+  var h='<div class="tabs2" role="group" aria-label="Pilih topik">';
+  K.topics.forEach(function(t){if(only&&!only(t))return;h+='<button class="tp" data-act="'+act+'" data-id="'+t.id+'" aria-pressed="'+(t.id===cur?'true':'false')+'">'+esc(t.name)+'</button>'});
+  return h+'</div>';
+}
+
+/* ---------- tampilan ---------- */
+var VIEWS=[['menu','Menu'],['alfabet','Alfabet'],['kartu','Kartu kilat'],['cocok','Cocokkan'],['cakap','Percakapan'],['kamus','Kamus gambar']];
+var view=$('#view'),cur='menu';
+var S={}; /* state per tampilan */
+
+function renderNav(){
+  var h='';
+  VIEWS.forEach(function(v){h+='<a class="chip" href="#'+v[0]+'" aria-current="'+(v[0]===cur?'page':'false')+'">'+v[1]+'</a>'});
+  $('#nav').innerHTML=h;
+}
+function route(){
+  var h=(location.hash||'').replace('#','');
+  cur=VIEWS.some(function(v){return v[0]===h})?h:'menu';
+  try{if(canSpeak)speechSynthesis.cancel()}catch(e){}
+  renderNav();
+  ({menu:vMenu,alfabet:vAlfabet,kartu:vKartu,cocok:vCocok,cakap:vCakap,kamus:vKamus})[cur]();
+  window.scrollTo(0,0);
+}
+
+function vMenu(){
+  var G=[['alfabet','A-Z','Alfabet','Huruf, nama huruf, dan kata contoh'],['kartu','Flip','Kartu kilat','Balik kartu, tandai kata yang sudah bisa'],['cocok','Pair','Cocokkan','Cari pasangan gambar dan kata'],['cakap','Chat','Percakapan','Dengar dan tirukan dialog pendek'],['kamus','Aa','Kamus gambar','Cari kata dan dengar suaranya']];
+  var h='<h2>Mau latihan apa?</h2><p class="lead">Semua kegiatan memakai suara. Dengarkan dulu, lalu tirukan keras-keras.</p>'+(canSpeak?'':NOSND)+'<div class="tiles">';
+  G.forEach(function(g){h+='<a class="tile" href="#'+g[0]+'"><span class="g" aria-hidden="true">'+g[1]+'</span><b>'+g[2]+'</b><span class="s">'+g[3]+'</span></a>'});
+  h+='<a class="tile" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><b>Modul</b><span class="s">Bab belajar dan cek paham</span></a></div>';
+  view.innerHTML=h;
+}
+
+/* alfabet */
+function vAlfabet(){
+  var h='<h2>Alfabet A sampai Z</h2><p class="lead">Tekan huruf untuk mendengar namanya dan kata contoh.</p>'+(canSpeak?'<div class="row"><button class="btn" data-act="alla">'+SPK+'Dengarkan A sampai Z</button></div>':NOSND)+'<div class="alpha" id="alpha">';
+  K.letters.forEach(function(l,i){
+    h+='<button class="lt" data-act="letter" data-i="'+i+'"><span class="L">'+l[0]+l[0].toLowerCase()+'</span><span class="e" aria-hidden="true">'+esc(l[4])+'</span><span class="w">'+esc(l[2])+'</span><span class="m">'+esc(l[3])+'</span></button>';
+  });
+  view.innerHTML=h+'</div><p class="note">Huruf X jarang di awal kata, jadi contohnya fox (x di akhir kata).</p>';
+}
+function mark(i){var els=document.querySelectorAll('.lt');for(var k=0;k<els.length;k++)els[k].classList.toggle('on',k===i)}
+function sayLetter(i,many){var l=K.letters[i];mark(i);say([l[1],l[2]])}
+
+/* kartu kilat */
+function buildDeck(id){
+  var t=topic(id),unknown=t.items.filter(function(w){return !store.known[kk(t,w)]});
+  S.k={topic:id,deck:shuffle(unknown),flipped:false,total:t.items.length};
+}
+function vKartu(){
+  if(!S.k)buildDeck(K.topics[3].id);
+  drawKartu();
+}
+function drawKartu(){
+  var k=S.k,t=topic(k.topic),known=0;
+  t.items.forEach(function(w){if(store.known[kk(t,w)])known++});
+  var h='<h2>Kartu kilat</h2>'+topicPills(k.topic,'ktopic')+'<div class="stat"><span>Sudah bisa: '+known+' dari '+k.total+'</span><span>Sisa kartu: '+k.deck.length+'</span></div><span class="meter" aria-hidden="true"><i style="width:'+Math.round(known/k.total*100)+'%"></i></span>';
+  if(!k.deck.length){
+    h+='<div class="res"><h3>Hebat! Semua kata '+esc(t.name)+' sudah bisa.</h3><p class="note">Pilih topik lain, atau ulangi dari awal untuk berlatih lagi.</p><button class="btn" data-act="kreset">Ulangi topik ini</button></div>';
+    view.innerHTML=h;return;
+  }
+  var w=k.deck[0];
+  if(!k.flipped){
+    h+='<button class="fc" data-act="flip" aria-label="Balik kartu untuk melihat jawabannya">'+picHtml(t,w,'pic')+'<span class="hint">Apa bahasa Inggrisnya? Tekan kartu untuk melihat.</span></button>';
+  }else{
+    h+='<button class="fc" data-act="flip" aria-label="Balik kartu lagi"><span class="en">'+esc(w[0])+'</span><span class="ph">'+esc(w[3])+'</span><span class="id">'+esc(w[1])+'</span></button>';
+    h+='<div class="row">'+(canSpeak?'<button class="btn alt" data-act="khear">'+SPK+'Dengar</button>':'')+'<button class="btn alt" data-act="kagain">Ulangi nanti</button><button class="btn good" data-act="kknow">Sudah bisa</button></div>';
+  }
+  view.innerHTML=h+(canSpeak?'':NOSND);
+}
+
+/* cocokkan */
+function vCocok(){
+  if(!S.c)newMatch('hewan');
+  drawMatch();
+}
+function newMatch(id){
+  var t=topic(id),items=shuffle(t.items).slice(0,6),cards=[];
+  items.forEach(function(w,i){cards.push({p:i,kind:'pic',w:w});cards.push({p:i,kind:'word',w:w})});
+  S.c={topic:id,cards:shuffle(cards),open:[],matched:{},moves:0,lock:false,pairs:items.length};
+}
+function matchedCount(){var n=0;for(var p in S.c.matched)n++;return n}
+function drawMatch(){
+  var c=S.c,t=topic(c.topic),finished=matchedCount()===c.pairs;
+  var h='<h2>Cocokkan gambar dan kata</h2>'+topicPills(c.topic,'ctopic',function(x){return x.items.length>=6})+'<div class="stat"><span>Langkah: '+c.moves+'</span><span>Pasangan: '+matchedCount()+' dari '+c.pairs+'</span></div><div class="board">';
+  c.cards.forEach(function(cd,i){
+    var isOpen=c.open.indexOf(i)>=0,isDone=!!c.matched[cd.p],show=isOpen||isDone;
+    var cls='mc'+(show?' open':'')+(isDone?' done':'')+(show&&cd.kind==='pic'?' pic'+(t.text?' txt':''):'');
+    h+='<button class="'+cls+'" data-act="mcard" data-i="'+i+'"'+(isDone?' disabled':'')+' aria-label="'+(show?(cd.kind==='pic'?'Gambar '+esc(cd.w[1]):esc(cd.w[0])):'Kartu tertutup')+'">'+(show?(cd.kind==='pic'?esc(cd.w[2]):esc(cd.w[0])):'<span class="q" aria-hidden="true">?</span>')+'</button>';
+  });
+  h+='</div>';
+  if(finished){
+    var n=c.moves<=9?3:(c.moves<=14?2:1),best=store.match[c.topic];
+    if(!best||c.moves<best){store.match[c.topic]=c.moves;persist()}
+    h+='<div class="res">'+stars(n)+'<h3>Semua pasangan ketemu!</h3><p class="note">'+c.moves+' langkah'+(best&&best<=c.moves?'. Terbaikmu: '+best+' langkah.':'.')+'</p><button class="btn" data-act="cagain">Main lagi</button></div>';
+  }else h+='<p class="note">Buka dua kartu. Kalau gambar dan katanya cocok, kartu tetap terbuka.</p>';
+  view.innerHTML=h+(canSpeak?'':NOSND);
+}
+function pickCard(i){
+  var c=S.c;
+  if(c.lock||c.open.indexOf(i)>=0||c.matched[c.cards[i].p])return;
+  c.open.push(i);
+  if(c.open.length<2){drawMatch();return}
+  c.moves++;
+  var a=c.cards[c.open[0]],b=c.cards[c.open[1]];
+  if(a.p===b.p&&a.kind!==b.kind){
+    c.matched[a.p]=true;c.open=[];drawMatch();say(a.w[0]);
+  }else{
+    c.lock=true;drawMatch();
+    setTimeout(function(){if(S.c!==c)return;c.open=[];c.lock=false;if(cur==='cocok')drawMatch()},950);
+  }
+}
+
+/* percakapan */
+function vCakap(){
+  if(!S.d)S.d={id:K.dialogs[0].id,hide:false};
+  drawDialog();
+}
+function curDialog(){var r=K.dialogs[0];K.dialogs.forEach(function(d){if(d.id===S.d.id)r=d});return r}
+function drawDialog(){
+  var d=curDialog(),first=d.lines[0][0];
+  var h='<h2>Percakapan</h2><div class="tabs2" role="group" aria-label="Pilih percakapan">';
+  K.dialogs.forEach(function(x){h+='<button class="tp" data-act="dsel" data-id="'+x.id+'" aria-pressed="'+(x.id===d.id?'true':'false')+'">'+esc(x.title)+'</button>'});
+  h+='</div><div class="row">'+(canSpeak?'<button class="btn" data-act="dall">'+SPK+'Dengarkan semua</button>':'')+'<button class="btn alt" data-act="dhide" aria-pressed="'+S.d.hide+'">'+(S.d.hide?'Tampilkan artinya':'Sembunyikan artinya')+'</button></div><div class="bubbles" id="bubbles">';
+  d.lines.forEach(function(l,i){
+    h+='<button class="bb '+(l[0]===first?'l':'r')+'" data-act="dline" data-i="'+i+'"><small>'+esc(l[0])+'</small><span class="e">'+esc(l[1])+'</span>'+(S.d.hide?'':'<span class="i">'+esc(l[2])+'</span>')+'</button>';
+  });
+  view.innerHTML=h+'</div><p class="note">Tekan satu kalimat untuk mendengarnya. Latihan: dengarkan, lalu ucapkan bergantian dengan orang tua.</p>'+(canSpeak?'':NOSND);
+}
+function markLine(i){var els=document.querySelectorAll('.bb');for(var k=0;k<els.length;k++)els[k].classList.toggle('on',k===i)}
+
+/* kamus */
+function vKamus(){
+  if(!S.q)S.q={text:'',topic:'all'};
+  var h='<h2>Kamus gambar</h2><input class="search" id="q" type="search" placeholder="Cari kata (Inggris atau Indonesia)" autocomplete="off" aria-label="Cari kata" value="'+esc(S.q.text)+'"><div class="tabs2" role="group" aria-label="Pilih topik"><button class="tp" data-act="qtopic" data-id="all" aria-pressed="'+(S.q.topic==='all'?'true':'false')+'">Semua</button>';
+  K.topics.forEach(function(t){h+='<button class="tp" data-act="qtopic" data-id="'+t.id+'" aria-pressed="'+(S.q.topic===t.id?'true':'false')+'">'+esc(t.name)+'</button>'});
+  view.innerHTML=h+'</div><p class="note" id="qc"></p><ul class="dict" id="dict"></ul>'+(canSpeak?'':NOSND);
+  drawDict();
+}
+function drawDict(){
+  var q=S.q.text.trim().toLowerCase(),out='',n=0;
+  K.topics.forEach(function(t){
+    if(S.q.topic!=='all'&&S.q.topic!==t.id)return;
+    t.items.forEach(function(w){
+      if(q&&w[0].toLowerCase().indexOf(q)<0&&w[1].toLowerCase().indexOf(q)<0)return;
+      n++;
+      out+='<li><button class="dr" data-act="dsay" data-t="'+esc(w[0])+'"><span class="p'+(t.text?' txt':'')+'" aria-hidden="true">'+esc(w[2])+'</span><span class="t"><b>'+esc(w[0])+'</b><span>'+esc(w[3])+' &middot; '+esc(w[1])+'</span></span>'+(canSpeak?'<span class="sp">'+SPK+'</span>':'')+'</button></li>';
+    });
+  });
+  $('#dict').innerHTML=out||'<li class="note">Kata tidak ditemukan. Coba ketik kata lain.</li>';
+  $('#qc').textContent=n+' kata';
+}
+
+/* ---------- aksi ---------- */
+document.addEventListener('input',function(e){
+  if(e.target&&e.target.id==='q'){S.q.text=e.target.value;drawDict()}
+});
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-act]');if(!t)return;
+  var a=t.getAttribute('data-act'),id=t.getAttribute('data-id'),i=Number(t.getAttribute('data-i'));
+  if(a==='letter')return sayLetter(i);
+  if(a==='alla'){
+    var seq=[];K.letters.forEach(function(l){seq.push(l[1]);seq.push(l[2])});
+    return say(seq,function(k){mark(Math.floor(k/2))},function(){mark(-1)});
+  }
+  if(a==='ktopic'){buildDeck(id);return drawKartu()}
+  if(a==='kreset'){var tt=topic(S.k.topic);tt.items.forEach(function(w){delete store.known[kk(tt,w)]});persist();buildDeck(S.k.topic);return drawKartu()}
+  if(a==='flip'){S.k.flipped=!S.k.flipped;drawKartu();if(S.k.flipped)say(S.k.deck[0][0]);return}
+  if(a==='khear')return say(S.k.deck[0][0]);
+  if(a==='kagain'){S.k.deck.push(S.k.deck.shift());S.k.flipped=false;return drawKartu()}
+  if(a==='kknow'){var tk=topic(S.k.topic),w=S.k.deck.shift();store.known[kk(tk,w)]=true;persist();S.k.flipped=false;return drawKartu()}
+  if(a==='ctopic'){newMatch(id);return drawMatch()}
+  if(a==='cagain'){newMatch(S.c.topic);return drawMatch()}
+  if(a==='mcard')return pickCard(i);
+  if(a==='dsel'){S.d.id=id;return drawDialog()}
+  if(a==='dhide'){S.d.hide=!S.d.hide;return drawDialog()}
+  if(a==='dline'){markLine(i);return say(curDialog().lines[i][1],null,function(){markLine(-1)})}
+  if(a==='dall'){return say(curDialog().lines.map(function(l){return l[1]}),function(k){markLine(k)},function(){markLine(-1)})}
+  if(a==='qtopic'){S.q.topic=id;return vKamus()}
+  if(a==='dsay')return say(t.getAttribute('data-t'));
+});
+window.addEventListener('hashchange',route);
+route();
+})();
+</script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 /* Service worker Belajar Kelas 2.
    Naikkan nomor CACHE setiap kali daftar SHELL atau isi halaman berubah. */
-var CACHE = 'belajar-kelas2-v1';
-var SHELL = ['./', 'index.html', 'ayo-belajar.html', 'modul-inggris.html',
+var CACHE = 'belajar-kelas2-v2';
+var SHELL = ['./', 'index.html', 'ayo-belajar.html', 'modul-inggris.html', 'inggris.html', 'kata.js',
              'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', function (e) {
