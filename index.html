@@ -4,100 +4,360 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Belajar Kelas 2</title>
+<meta name="theme-color" content="#4A47E0">
+<meta name="application-name" content="Belajar Kelas 2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Belajar">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap">
+<script>
+try{var th=localStorage.getItem('belajar-theme');if(th==='dark'||th==='light')document.documentElement.setAttribute('data-theme',th)}catch(e){}
+</script>
 <style>
-/* Layout: satu kolom. Atas: modul belajar. Bawah: kuis dikelompokkan per pelajaran, tiap latihan berupa tautan langsung. */
+/* Layout: kerangka aplikasi. Layar lebar: menu samping + isi. HP: isi penuh + tab bawah. Empat panel (Beranda, Belajar, Kuis, Progres) dipilih lewat #hash. */
 :root{
-  --bg:#EEF3FB;--card:#fff;--ink:#18213D;--muted:#58627F;--line:#D3DBEE;--on:#fff;
+  --bg:#EEF3FB;--card:#FFFFFF;--ink:#18213D;--muted:#58627F;--line:#D3DBEE;--on:#FFFFFF;
+  --brand:#4A47E0;--brand-soft:#E4E3FF;
   --math:#2B56E0;--math-soft:#DCE6FF;--read:#CF3F29;--read-soft:#FFE0D9;
   --write:#0E7F5A;--write-soft:#CFF1E2;--eng:#7C3FD6;--eng-soft:#EADCFF;
+  --star:#F5B000;--good:#0E7F5A;--warn-soft:#FFF0C7;
+  --fd:'Fredoka','Baloo 2',ui-rounded,'Trebuchet MS',system-ui,sans-serif;
+  --fb:'Nunito','Segoe UI',system-ui,sans-serif;
 }
-@media (prefers-color-scheme:dark){:root{
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1629;--card:#192240;--ink:#EEF2FF;--muted:#A5B0D0;--line:#2B3862;--on:#0F1629;
+    --brand:#A5A3FF;--brand-soft:#2C2A63;
+    --math:#86A5FF;--math-soft:#1F2D62;--read:#FF9582;--read-soft:#4B2822;
+    --write:#55D6A5;--write-soft:#143F39;--eng:#BE9BFF;--eng-soft:#34265F;
+    --star:#FFC933;--good:#55D6A5;--warn-soft:#4A3C12;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
   --bg:#0F1629;--card:#192240;--ink:#EEF2FF;--muted:#A5B0D0;--line:#2B3862;--on:#0F1629;
+  --brand:#A5A3FF;--brand-soft:#2C2A63;
   --math:#86A5FF;--math-soft:#1F2D62;--read:#FF9582;--read-soft:#4B2822;
-  --write:#55D6A5;--write-soft:#143F39;--eng:#BE9BFF;--eng-soft:#34265F;color-scheme:dark}}
+  --write:#55D6A5;--write-soft:#143F39;--eng:#BE9BFF;--eng-soft:#34265F;
+  --star:#FFC933;--good:#55D6A5;--warn-soft:#4A3C12;color-scheme:dark;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:700 17px/1.5 'Nunito','Segoe UI',system-ui,sans-serif;
-  padding-top:max(24px,env(safe-area-inset-top,0px));padding-bottom:56px;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-main{max-width:720px;margin:0 auto}
-h1,h2,h3,p{margin:0}
-h1{font:700 42px/1.1 'Fredoka',ui-rounded,system-ui,sans-serif}
-.lead{color:var(--muted);margin-top:6px}
-.k{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:30px 0 10px}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:700 17px/1.5 var(--fb);padding-top:env(safe-area-inset-top,0px)}
+h1,h2,h3,p,ul{margin:0}
 a{color:inherit}
-a:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
-.modul{display:flex;align-items:center;gap:16px;padding:18px;border-radius:24px;background:var(--eng-soft);text-decoration:none}
-.modul .g{flex:none;width:64px;height:64px;border-radius:18px;background:var(--card);color:var(--eng);display:grid;place-items:center;font:700 22px 'Fredoka',ui-rounded,system-ui,sans-serif}
-.modul b{display:block;font:600 24px/1.2 'Fredoka',ui-rounded,system-ui,sans-serif}
-.modul span{color:var(--muted);font-size:15px}
-.grp{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:16px;margin-bottom:14px}
-.grp[data-s="math"]{--acc:var(--math);--soft:var(--math-soft)}
-.grp[data-s="read"]{--acc:var(--read);--soft:var(--read-soft)}
-.grp[data-s="write"]{--acc:var(--write);--soft:var(--write-soft)}
-.grp[data-s="eng"]{--acc:var(--eng);--soft:var(--eng-soft)}
-.gh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.gh h2{font:600 24px/1.2 'Fredoka',ui-rounded,system-ui,sans-serif;color:var(--acc)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+[data-s="math"]{--acc:var(--math);--soft:var(--math-soft)}
+[data-s="read"]{--acc:var(--read);--soft:var(--read-soft)}
+[data-s="write"]{--acc:var(--write);--soft:var(--write-soft)}
+[data-s="eng"]{--acc:var(--eng);--soft:var(--eng-soft)}
+
+.shell{min-height:100vh}
+.side{display:none}
+.main{min-width:0;padding-top:14px;padding-bottom:calc(104px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.col{max-width:860px;margin:0 auto}
+
+/* bilah atas */
+.top{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.top h1{font:700 32px/1.1 var(--fd);flex:1;min-width:0}
+.pill{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:99px;background:var(--card);border:2px solid var(--line);font-weight:800;font-size:15px}
+.pill:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.pill svg{width:20px;height:20px;flex:none}
+.ic{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.st-on{fill:var(--star)}.st-off{fill:var(--line)}
+.rate{display:inline-flex;gap:1px;flex:none}
+.rate svg{width:18px;height:18px}
+
+/* beranda */
+.hello .k{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)}
+.hello h2{font:700 36px/1.12 var(--fd);margin-top:4px;text-wrap:balance}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px}
+.tile{display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:24px;background:var(--soft);text-decoration:none;min-width:0;transition:transform .15s}
+.tile:hover{transform:translateY(-3px)}
+.tile .g{font:700 40px/1 var(--fd);color:var(--acc);min-height:44px;overflow-wrap:anywhere}
+.tile b{font:600 20px/1.2 var(--fd)}
+.tile .pr{font-size:14px;color:var(--muted)}
+.meter{display:block;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.tile .meter{background:rgba(127,127,127,.25)}
+.meter i{display:block;height:100%;border-radius:99px;background:var(--acc,var(--brand))}
+.today{display:flex;align-items:center;gap:14px;margin-top:16px;padding:16px;border-radius:24px;background:var(--card);border:2px solid var(--line);text-decoration:none}
+.today .badge{flex:none;width:56px;height:56px;border-radius:16px;background:var(--soft,var(--brand-soft));color:var(--acc,var(--brand));display:grid;place-items:center;font:700 20px var(--fd);text-align:center;padding:4px;overflow-wrap:anywhere}
+.today .tx{flex:1;min-width:0}
+.today .tx small{display:block;font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.today .tx b{display:block;font:600 22px/1.2 var(--fd)}
+.today .tx span{font-size:14px;color:var(--muted)}
+.go{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:14px;background:var(--brand);color:var(--on);font:600 18px var(--fd)}
+
+/* daftar baris */
+.sec+.sec{margin-top:24px}
+.sec>h2{font:600 22px/1.2 var(--fd);margin-bottom:12px}
+.hero{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:24px;background:var(--soft);text-decoration:none}
+.hero .g{font:700 36px/1 var(--fd);color:var(--acc)}
+.hero b{font:600 24px/1.2 var(--fd)}
+.hero span{color:var(--muted);font-size:15px}
+.rows{display:grid;gap:8px;list-style:none;padding:0}
+.row{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 14px;border-radius:16px;background:var(--card);border:2px solid var(--line);text-decoration:none;min-width:0}
+.row:hover{border-color:var(--acc,var(--brand))}
+.row .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--soft,var(--brand-soft));color:var(--acc,var(--brand));display:grid;place-items:center;font:600 16px var(--fd)}
+.row.ok .n{background:var(--good);color:#fff}
+.row .t{flex:1;min-width:0;font-weight:800;overflow-wrap:anywhere}
+.row .s{font-size:14px;color:var(--muted);font-weight:700;flex:none}
+.grp{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:14px}
+.grp+.grp{margin-top:14px}
+.gh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.gh h2{font:600 24px/1.2 var(--fd);color:var(--acc)}
 .gh a{font-size:14px;font-weight:800;color:var(--muted)}
 .ls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.ls a{display:flex;align-items:center;min-height:48px;padding:8px 14px;border-radius:14px;background:var(--soft);text-decoration:none;font-weight:800;font-size:16px;min-width:0;overflow-wrap:anywhere}
+.ls a{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:52px;padding:8px 12px;border-radius:14px;background:var(--soft);text-decoration:none;font-weight:800;font-size:16px;min-width:0}
+.ls a span.nm{min-width:0;overflow-wrap:anywhere}
 .ls a:hover{outline:2px solid var(--acc)}
-@media (max-width:440px){h1{font-size:34px}.ls{grid-template-columns:1fr}}
+
+/* progres */
+.card{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:16px}
+.big{font:700 40px/1 var(--fd)}
+.big small{font:700 18px var(--fd);color:var(--muted)}
+.pbar{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;margin-top:12px;font-size:15px}
+.pbar .meter{height:12px}
+.pbar b{font-weight:800;min-width:0;overflow-wrap:anywhere}
+.pbar span{color:var(--muted);font-size:14px}
+.note{margin-top:10px;font-size:14px;color:var(--muted)}
+.empty{padding:14px;border-radius:16px;background:var(--warn-soft);font-size:15px}
+
+/* tab bawah (HP) */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--card);border-top:2px solid var(--line);
+  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px;padding:6px 4px;border-radius:14px;text-decoration:none;font-size:13px;font-weight:800;color:var(--muted)}
+.tab svg{width:26px;height:26px}
+.tab[aria-current="page"]{color:var(--brand);background:var(--brand-soft)}
+
+@media (min-width:860px){
+  .shell{display:grid;grid-template-columns:268px minmax(0,1fr)}
+  .side{display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 16px;background:var(--card);border-right:2px solid var(--line)}
+  .tabs{display:none}
+  .main{padding-top:26px;padding-bottom:56px;padding-left:36px;padding-right:36px}
+  .tiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .ls{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .top h1{font-size:38px}
+  #themebtn{display:none}
+  .hello h2{font-size:42px}
+}
+.brandrow{display:flex;align-items:center;gap:12px;padding:0 6px}
+.brandrow img{width:46px;height:46px;border-radius:14px}
+.brandrow b{display:block;font:700 22px/1.1 var(--fd)}
+.brandrow span{font-size:13px;color:var(--muted);font-weight:700}
+.sg{display:grid;gap:4px}
+.sg h3{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0 10px;margin-bottom:2px}
+.si{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 12px;border-radius:14px;text-decoration:none;font-weight:800;font-size:16px}
+.si svg{width:22px;height:22px;flex:none}
+.si:hover{background:var(--bg)}
+.si[aria-current="page"]{background:var(--brand-soft);color:var(--brand)}
+.si .dot{width:12px;height:12px;border-radius:50%;background:var(--acc);flex:none;margin:0 5px}
+.sfoot{margin-top:auto;display:grid;gap:8px}
+.sfoot .pill{justify-content:center;width:100%}
+@media (max-width:440px){
+  .hello h2{font-size:30px}
+  .top h1{font-size:28px}
+  .ls{grid-template-columns:1fr}
+  .pbar{grid-template-columns:90px 1fr auto}
+  .today{flex-wrap:wrap}
+  .today .go{width:100%;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<main>
-<h1>Belajar Kelas 2</h1>
-<p class="lead">Baca modul dulu, lalu latihan lewat kuis.</p>
+<div class="shell">
+  <aside class="side" aria-label="Menu samping">
+    <div class="brandrow"><img src="icon-192.png" alt="" width="46" height="46"><div><b>Belajar Kelas 2</b><span>Matematika, membaca, menulis, Inggris</span></div></div>
+    <nav class="sg" aria-label="Menu utama">
+      <h3>Menu</h3>
+      <a class="si" href="#beranda" data-p="beranda"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Beranda</a>
+      <a class="si" href="#belajar" data-p="belajar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg>Belajar</a>
+      <a class="si" href="#kuis" data-p="kuis"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7"/><path d="M12 17h.01"/></svg>Kuis</a>
+      <a class="si" href="#progres" data-p="progres"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>Progres</a>
+    </nav>
+    <nav class="sg" aria-label="Langsung ke kuis">
+      <h3>Langsung ke kuis</h3>
+      <a class="si" data-s="math" href="ayo-belajar.html#math"><span class="dot"></span>Matematika</a>
+      <a class="si" data-s="read" href="ayo-belajar.html#read"><span class="dot"></span>Membaca</a>
+      <a class="si" data-s="write" href="ayo-belajar.html#write"><span class="dot"></span>Menulis</a>
+      <a class="si" data-s="eng" href="ayo-belajar.html#eng"><span class="dot"></span>Bahasa Inggris</a>
+    </nav>
+    <div class="sfoot">
+      <button class="pill" id="inst" hidden>Pasang di layar HP</button>
+      <button class="pill" data-act="theme" aria-label="Ganti mode terang atau gelap">Mode terang / gelap</button>
+    </div>
+  </aside>
 
-<h2 class="k">Belajar</h2>
-<a class="modul" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><span><b>Modul Bahasa Inggris</b><span>10 bab dengan kartu kata, suara, dan cek paham</span></span></a>
+  <div class="main">
+    <div class="col">
+      <header class="top">
+        <h1 id="ttl">Beranda</h1>
+        <span class="pill" id="starpill" aria-live="polite"></span>
+        <button class="pill" data-act="theme" id="themebtn" aria-label="Ganti mode terang atau gelap"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+      </header>
+      <main>
+        <section id="p-beranda"></section>
+        <section id="p-belajar" hidden></section>
+        <section id="p-kuis" hidden></section>
+        <section id="p-progres" hidden></section>
+      </main>
+    </div>
+  </div>
 
-<h2 class="k">Kuis</h2>
-
-<section class="grp" data-s="math">
-<div class="gh"><h2>Matematika</h2><a href="ayo-belajar.html#math">Buka semua</a></div>
-<div class="ls">
-<a href="ayo-belajar.html#m-tambah">Tambah sampai 20</a>
-<a href="ayo-belajar.html#m-kurang">Kurang sampai 20</a>
-<a href="ayo-belajar.html#m-susun">Tambah &amp; kurang bersusun</a>
-<a href="ayo-belajar.html#m-tempat">Nilai tempat</a>
-<a href="ayo-belajar.html#m-banding">Banding bilangan</a>
-<a href="ayo-belajar.html#m-kali">Kelompok sama</a>
-<a href="ayo-belajar.html#m-cerita">Soal cerita</a>
-<a href="ayo-belajar.html#m-jam">Membaca jam</a>
+  <nav class="tabs" aria-label="Menu bawah">
+    <a class="tab" href="#beranda" data-p="beranda"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Beranda</a>
+    <a class="tab" href="#belajar" data-p="belajar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg>Belajar</a>
+    <a class="tab" href="#kuis" data-p="kuis"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7"/><path d="M12 17h.01"/></svg>Kuis</a>
+    <a class="tab" href="#progres" data-p="progres"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>Progres</a>
+  </nav>
 </div>
-</section>
 
-<section class="grp" data-s="read">
-<div class="gh"><h2>Membaca</h2><a href="ayo-belajar.html#read">Buka semua</a></div>
-<div class="ls">
-<a href="ayo-belajar.html#r-suku">Susun suku kata</a>
-<a href="ayo-belajar.html#r-kata">Baca kata</a>
-<a href="ayo-belajar.html#r-huruf">Huruf awal &amp; akhir</a>
-<a href="ayo-belajar.html#r-cerita">Baca dan jawab</a>
-</div>
-</section>
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+function load(k){try{return JSON.parse(localStorage.getItem(k))||{}}catch(e){return {}}}
 
-<section class="grp" data-s="write">
-<div class="gh"><h2>Menulis</h2><a href="ayo-belajar.html#write">Buka semua</a></div>
-<div class="ls">
-<a href="ayo-belajar.html#w-huruf">Susun huruf</a>
-<a href="ayo-belajar.html#w-kalimat">Susun kalimat</a>
-<a href="ayo-belajar.html#w-kapital">Kapital &amp; tanda baca</a>
-<a href="ayo-belajar.html#w-lawan">Lawan kata</a>
-</div>
-</section>
+/* data pelajaran: [id latihan, nama] */
+var SUBJ=[
+ {id:'math',name:'Matematika',glyph:'7+5',blurb:'Berhitung, bilangan, jam',modes:[
+  ['m-tambah','Tambah sampai 20'],['m-kurang','Kurang sampai 20'],['m-susun','Tambah & kurang bersusun'],['m-tempat','Nilai tempat'],
+  ['m-banding','Banding bilangan'],['m-kali','Kelompok sama'],['m-cerita','Soal cerita'],['m-jam','Membaca jam']]},
+ {id:'read',name:'Membaca',glyph:'ba·ju',blurb:'Suku kata, kata, cerita',modes:[
+  ['r-suku','Susun suku kata'],['r-kata','Baca kata'],['r-huruf','Huruf awal & akhir'],['r-cerita','Baca dan jawab']]},
+ {id:'write',name:'Menulis',glyph:'Aa',blurb:'Huruf, kalimat, kata',modes:[
+  ['w-huruf','Susun huruf'],['w-kalimat','Susun kalimat'],['w-kapital','Kapital & tanda baca'],['w-lawan','Lawan kata']]},
+ {id:'eng',name:'Bahasa Inggris',glyph:'Hi!',blurb:'Kosakata dan ejaan',modes:[
+  ['e-gambar','Gambar ke kata'],['e-dengar','Dengar & pilih'],['e-eja','Eja kata'],['e-arti','Arti kata']]}
+];
+var CH=[['salam','Salam'],['angka','Angka 1 sampai 10'],['warna','Warna'],['hewan','Hewan'],['makanan','Buah dan makanan'],['tubuh','Anggota tubuh'],['keluarga','Keluarga'],['sekolah','Benda di sekolah'],['hari','Nama hari'],['kalimat','Kalimat pertamaku']];
+var TITLES={beranda:'Beranda',belajar:'Belajar',kuis:'Kuis',progres:'Progres'};
+var PANELS=['beranda','belajar','kuis','progres'];
 
-<section class="grp" data-s="eng">
-<div class="gh"><h2>Bahasa Inggris</h2><a href="ayo-belajar.html#eng">Buka semua</a></div>
-<div class="ls">
-<a href="ayo-belajar.html#e-gambar">Gambar ke kata</a>
-<a href="ayo-belajar.html#e-dengar">Dengar &amp; pilih</a>
-<a href="ayo-belajar.html#e-eja">Eja kata</a>
-<a href="ayo-belajar.html#e-arti">Arti kata</a>
-</div>
-</section>
-</main>
+var best={},done={};
+function b(id){return best[id]||0}
+function stat(s){var g=0;s.modes.forEach(function(m){g+=b(m[0])});return {g:g,t:s.modes.length*3}}
+function chDone(){var n=0;CH.forEach(function(c){if(done[c[0]])n++});return n}
+var STAR_PTS='12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26';
+function star(on){return '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="'+STAR_PTS+'" class="'+(on?'st-on':'st-off')+'" stroke-linejoin="round"/></svg>'}
+function rate(n){var h='<span class="rate" role="img" aria-label="'+n+' dari 3 bintang">';for(var i=0;i<3;i++)h+=star(i<n);return h+'</span>'}
+function meter(v,t){return '<span class="meter" aria-hidden="true"><i style="width:'+(t?Math.round(v/t*100):0)+'%"></i></span>'}
+
+function suggest(){
+  var pick=null;
+  SUBJ.forEach(function(s){s.modes.forEach(function(m){var v=b(m[0]);if(v<3&&(!pick||v<pick.v))pick={v:v,s:s,m:m}})});
+  return pick;
+}
+
+function renderBeranda(){
+  var h='<div class="hello"><p class="k">Selamat belajar</p><h2>Halo! Mau belajar apa hari ini?</h2></div><div class="tiles">';
+  h+='<a class="tile" data-s="eng" href="modul-inggris.html"><span class="g">Hi!</span><b>Modul Bahasa Inggris</b><span class="pr">'+chDone()+' dari '+CH.length+' bab selesai</span>'+meter(chDone(),CH.length)+'</a>';
+  SUBJ.slice(0,3).forEach(function(s){
+    var st=stat(s);
+    h+='<a class="tile" data-s="'+s.id+'" href="ayo-belajar.html#'+s.id+'"><span class="g" aria-hidden="true">'+esc(s.glyph)+'</span><b>Kuis '+esc(s.name)+'</b><span class="pr">'+st.g+' dari '+st.t+' bintang</span>'+meter(st.g,st.t)+'</a>';
+  });
+  h+='</div>';
+  var p=suggest();
+  if(p){
+    h+='<a class="today" data-s="'+p.s.id+'" href="ayo-belajar.html#'+p.m[0]+'"><span class="badge" aria-hidden="true">'+esc(p.s.glyph)+'</span><span class="tx"><small>Coba hari ini</small><b>'+esc(p.m[1])+'</b><span>'+esc(p.s.name)+' &middot; '+(p.v===0?'belum dicoba':p.v+' bintang, ayo tambah')+'</span></span><span class="go">Mulai</span></a>';
+  }else{
+    h+='<div class="today"><span class="tx"><small>Hebat!</small><b>Semua latihan sudah 3 bintang</b><span>Ulangi latihan favoritmu dari menu Kuis.</span></span></div>';
+  }
+  $('#p-beranda').innerHTML=h;
+}
+function renderBelajar(){
+  var h='<div class="sec"><a class="hero" data-s="eng" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><b>Modul Bahasa Inggris</b><span>Kartu kata bergambar, suara, kalimat contoh, dan cek paham di setiap bab.</span>'+meter(chDone(),CH.length)+'<span>'+chDone()+' dari '+CH.length+' bab selesai</span></a></div>';
+  h+='<div class="sec" data-s="eng"><h2>Pilih bab</h2><ul class="rows">';
+  CH.forEach(function(c,i){
+    var ok=!!done[c[0]];
+    h+='<li><a class="row'+(ok?' ok':'')+'" href="modul-inggris.html#'+c[0]+'"><span class="n">'+(ok?'✓':(i+1))+'</span><span class="t">'+esc(c[1])+'</span><span class="s">'+(ok?'Selesai':'Belum')+'</span></a></li>';
+  });
+  h+='</ul></div>';
+  $('#p-belajar').innerHTML=h;
+}
+function renderKuis(){
+  var h='';
+  SUBJ.forEach(function(s){
+    var st=stat(s);
+    h+='<section class="grp" data-s="'+s.id+'"><div class="gh"><h2>'+esc(s.name)+'</h2><a href="ayo-belajar.html#'+s.id+'">Buka semua &middot; '+st.g+'/'+st.t+' bintang</a></div><div class="ls">';
+    s.modes.forEach(function(m){h+='<a href="ayo-belajar.html#'+m[0]+'"><span class="nm">'+esc(m[1])+'</span>'+rate(b(m[0]))+'</a>'});
+    h+='</div></section>';
+  });
+  $('#p-kuis').innerHTML=h;
+}
+function renderProgres(){
+  var g=0,t=0;SUBJ.forEach(function(s){var st=stat(s);g+=st.g;t+=st.t});
+  var h='<div class="card"><div class="big">'+g+' <small>dari '+t+' bintang</small></div>'+meter(g,t);
+  SUBJ.forEach(function(s){var st=stat(s);h+='<div class="pbar" data-s="'+s.id+'"><b>'+esc(s.name)+'</b>'+meter(st.g,st.t)+'<span>'+st.g+'/'+st.t+'</span></div>'});
+  h+='<div class="pbar" data-s="eng"><b>Modul Inggris</b>'+meter(chDone(),CH.length)+'<span>'+chDone()+'/'+CH.length+' bab</span></div></div>';
+  var redo=[];
+  SUBJ.forEach(function(s){s.modes.forEach(function(m){if(b(m[0])<2)redo.push({s:s,m:m,v:b(m[0])})})});
+  redo.sort(function(a,c){return a.v-c.v});
+  h+='<div class="sec"><h2>Perlu diulang</h2>';
+  if(!redo.length)h+='<p class="empty">Semua latihan sudah minimal 2 bintang. Bagus sekali!</p>';
+  else{
+    h+='<ul class="rows">';
+    redo.forEach(function(r){h+='<li><a class="row" data-s="'+r.s.id+'" href="ayo-belajar.html#'+r.m[0]+'"><span class="t">'+esc(r.m[1])+'<br><span class="s">'+esc(r.s.name)+'</span></span>'+(r.v===0?'<span class="s">Belum dicoba</span>':rate(r.v))+'</a></li>'});
+    h+='</ul>';
+  }
+  h+='<p class="note">Latihan dengan 0 atau 1 bintang ditampilkan di sini. Progres tersimpan di browser perangkat ini, jadi kalau anak memakai HP lain, progresnya mulai dari awal.</p></div>';
+  $('#p-progres').innerHTML=h;
+}
+function renderAll(){
+  best=load('ayo-belajar-kelas2').best||{};
+  done=load('modul-inggris-kelas2')||{};
+  var g=0,t=0;SUBJ.forEach(function(s){var st=stat(s);g+=st.g;t+=st.t});
+  $('#starpill').innerHTML=star(true)+g+' / '+t;
+  renderBeranda();renderBelajar();renderKuis();renderProgres();
+}
+
+function route(){
+  var h=(location.hash||'').replace('#','');
+  if(PANELS.indexOf(h)<0)h='beranda';
+  PANELS.forEach(function(p){$('#p-'+p).hidden=(p!==h)});
+  var links=document.querySelectorAll('[data-p]');
+  for(var i=0;i<links.length;i++)links[i].setAttribute('aria-current',links[i].getAttribute('data-p')===h?'page':'false');
+  $('#ttl').textContent=TITLES[h];
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+window.addEventListener('pageshow',function(e){if(e.persisted)renderAll()});
+
+/* mode terang / gelap */
+function effective(){
+  var t=document.documentElement.getAttribute('data-theme');
+  if(t)return t;
+  return (window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+}
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-act="theme"]');if(!t)return;
+  var n=effective()==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',n);
+  try{localStorage.setItem('belajar-theme',n)}catch(err){}
+});
+
+/* pasang di layar HP */
+var deferred=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;$('#inst').hidden=false});
+$('#inst').addEventListener('click',function(){
+  if(!deferred)return;
+  deferred.prompt();
+  var done2=function(){deferred=null;$('#inst').hidden=true};
+  deferred.userChoice.then(done2,done2);
+});
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+}
+
+renderAll();route();
+})();
+</script>
 </body>
 </html>

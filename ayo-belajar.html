@@ -207,6 +207,8 @@ a.pill{text-decoration:none;color:inherit}
 <script>
 (function(){
 'use strict';
+try{var th=localStorage.getItem('belajar-theme');if(th==='dark'||th==='light')document.documentElement.setAttribute('data-theme',th)}catch(e){}
+
 var rnd=function(a,b){return Math.floor(Math.random()*(b-a+1))+a};
 var pick=function(a){return a[rnd(0,a.length-1)]};
 var shuffle=function(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=rnd(0,i);var t=a[i];a[i]=a[j];a[j]=t}return a};

@@ -1,0 +1,32 @@
+{
+  "name": "Belajar Kelas 2",
+  "short_name": "Belajar",
+  "description": "Modul dan kuis belajar untuk anak kelas 2 SD: matematika, membaca, menulis, bahasa Inggris.",
+  "lang": "id",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EEF3FB",
+  "theme_color": "#4A47E0",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

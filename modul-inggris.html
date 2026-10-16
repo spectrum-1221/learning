@@ -145,6 +145,8 @@ mark{background:var(--hl);color:inherit;border-radius:6px;padding:0 4px}
 <script>
 (function(){
 'use strict';
+try{var th=localStorage.getItem('belajar-theme');if(th==='dark'||th==='light')document.documentElement.setAttribute('data-theme',th)}catch(e){}
+
 var rnd=function(a,b){return Math.floor(Math.random()*(b-a+1))+a};
 var shuffle=function(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=rnd(0,i);var t=a[i];a[i]=a[j];a[j]=t}return a};
 var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
@@ -214,6 +216,7 @@ function article(w){return /^[aeiou]/i.test(w)?'an':'a'}
 var app=$('#app');
 var cur=0,Q=null,MK={f:0,w:0};
 CH.some(function(c,i){if(!done[c.id]){cur=i;return true}return false});
+try{var hh=(location.hash||'').replace('#','');CH.forEach(function(c,i){if(c.id===hh)cur=i})}catch(e){}
 
 function chipsHtml(){
   var h='<nav class="chips" aria-label="Daftar bab">';
