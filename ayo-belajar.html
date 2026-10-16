@@ -1,0 +1,778 @@
+<title>Ayo Belajar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800&display=swap">
+<style>
+/* Layout: satu kolom sempit seperti buku latihan; kartu pelajaran besar di beranda, kartu soal tunggal saat bermain. */
+:root{
+  --bg:#EEF3FB; --card:#FFFFFF; --ink:#18213D; --muted:#58627F; --line:#D3DBEE;
+  --math:#2B56E0; --math-soft:#DCE6FF;
+  --read:#CF3F29; --read-soft:#FFE0D9;
+  --write:#0E7F5A; --write-soft:#CFF1E2;
+  --eng:#7C3FD6; --eng-soft:#EADCFF;
+  --star:#F5B000; --amber:#F29D00;
+  --good:#0E7F5A; --good-soft:#D5F3E6; --bad:#CC3329; --bad-soft:#FFE2DF; --warn-soft:#FFF0C7;
+  --on:#FFFFFF;
+  --fd:'Fredoka','Baloo 2',ui-rounded,'Trebuchet MS',system-ui,sans-serif;
+  --fb:'Nunito','Segoe UI',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1629; --card:#192240; --ink:#EEF2FF; --muted:#A5B0D0; --line:#2B3862;
+    --math:#86A5FF; --math-soft:#1F2D62;
+    --read:#FF9582; --read-soft:#4B2822;
+    --write:#55D6A5; --write-soft:#143F39;
+    --eng:#BE9BFF; --eng-soft:#34265F;
+    --star:#FFC933; --amber:#FFB43A;
+    --good:#55D6A5; --good-soft:#143F39; --bad:#FF8479; --bad-soft:#4B2522; --warn-soft:#4A3C12;
+    --on:#0F1629; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1629; --card:#192240; --ink:#EEF2FF; --muted:#A5B0D0; --line:#2B3862;
+  --math:#86A5FF; --math-soft:#1F2D62;
+  --read:#FF9582; --read-soft:#4B2822;
+  --write:#55D6A5; --write-soft:#143F39;
+  --eng:#BE9BFF; --eng-soft:#34265F;
+  --star:#FFC933; --amber:#FFB43A;
+  --good:#55D6A5; --good-soft:#143F39; --bad:#FF8479; --bad-soft:#4B2522; --warn-soft:#4A3C12;
+  --on:#0F1629; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:700 17px/1.5 var(--fb);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 56px}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,summary:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+h1,h2,h3,p{margin:0}
+.wrap{max-width:720px;margin:0 auto;min-width:0}
+[data-s="math"]{--acc:var(--math);--soft:var(--math-soft)}
+[data-s="read"]{--acc:var(--read);--soft:var(--read-soft)}
+[data-s="write"]{--acc:var(--write);--soft:var(--write-soft)}
+[data-s="eng"]{--acc:var(--eng);--soft:var(--eng-soft)}
+
+/* beranda */
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.top h1{font:700 40px/1.1 var(--fd);letter-spacing:-.01em}
+.top p{color:var(--muted);font-weight:700;margin-top:4px}
+.side{display:flex;gap:8px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:2px solid var(--line);font-weight:800;font-size:15px}
+.pill svg{width:20px;height:20px}
+.subjects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sub{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:18px 18px 16px;border-radius:24px;background:var(--soft);border:2px solid transparent;min-width:0;transition:transform .15s}
+.sub:hover{transform:translateY(-3px)}
+.sub:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.sub .glyph{font:700 48px/1 var(--fd);color:var(--acc);letter-spacing:-.02em;min-height:52px;overflow-wrap:anywhere}
+.sub h2{font:600 22px/1.2 var(--fd)}
+.sub .bl{font-size:14px;color:var(--muted);font-weight:700}
+.sub .pr{margin-top:6px;font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px}
+.sub .pr svg{width:16px;height:16px}
+.tips{margin-top:26px;background:var(--card);border:2px solid var(--line);border-radius:20px;padding:4px 18px}
+.tips summary{cursor:pointer;font:600 18px/1.4 var(--fd);padding:12px 0}
+.tips ul{margin:0 0 14px;padding-left:20px;color:var(--muted)}
+.tips li{margin-bottom:6px}
+
+/* daftar mode */
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.back{all:unset;box-sizing:border-box;cursor:pointer;width:46px;height:46px;border-radius:50%;background:var(--card);border:2px solid var(--line);display:grid;place-items:center;flex:none}
+.back:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.back svg{width:22px;height:22px}
+.shead h1{font:700 32px/1.1 var(--fd);color:var(--acc)}
+.modes{display:flex;flex-direction:column;gap:12px}
+.mrow{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:14px;padding:14px;border-radius:20px;background:var(--card);border:2px solid var(--line);min-width:0}
+.mrow:hover{border-color:var(--acc)}
+.mrow:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.mg{flex:none;width:64px;height:64px;border-radius:16px;background:var(--soft);color:var(--acc);display:grid;place-items:center;font:700 19px/1 var(--fd);text-align:center;padding:4px;overflow-wrap:anywhere}
+.mt{flex:1;min-width:0}
+.mt b{display:block;font:600 20px/1.2 var(--fd)}
+.mt span{display:block;font-size:14px;color:var(--muted);font-weight:700;margin-top:2px}
+.rate{display:flex;gap:2px;flex:none}
+.rate svg{width:22px;height:22px}
+.st-on{fill:var(--star)}
+.st-off{fill:var(--line)}
+
+/* bermain */
+.gtop{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.prog{flex:1;height:14px;border-radius:99px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width .3s}
+.pc{font:600 17px var(--fd);min-width:42px;text-align:right}
+.q{background:var(--card);border:2px solid var(--line);border-radius:26px;padding:20px 18px 22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.qlabel{display:inline-block;align-self:flex-start;background:var(--soft);color:var(--ink);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:99px}
+.prompt{font:600 36px/1.2 var(--fd);text-wrap:balance;overflow-wrap:anywhere}
+.prompt.small{font-size:24px}
+.prompt.big{font-size:56px;color:var(--acc);text-align:center}
+.prompt.story{font:700 21px/1.6 var(--fb)}
+.visual{display:flex;justify-content:center;min-width:0}
+.emoji{font-size:96px;line-height:1.1;text-align:center}
+.passage{background:var(--soft);border-radius:18px;padding:16px 18px;font-size:20px;line-height:1.75;width:100%}
+.spk{all:unset;box-sizing:border-box;cursor:pointer;align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:8px 16px 8px 12px;border-radius:99px;background:var(--acc);color:var(--on);font-weight:800;font-size:15px}
+.spk:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.spk svg{width:22px;height:22px;fill:currentColor}
+.legend{display:flex;gap:16px;justify-content:center;font-weight:800;font-size:15px;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:6px;vertical-align:-2px}
+.legend .la{background:var(--math)}.legend .lb{background:var(--amber)}.legend .lx{background:var(--math-soft);border:2px solid var(--math);position:relative}
+.note{font-size:14px;color:var(--muted);text-align:center;font-weight:700}
+
+/* bingkai sepuluh */
+.tf{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;width:100%;max-width:440px}
+.cell{aspect-ratio:1;border-radius:50%;border:2px solid var(--line);position:relative}
+.cell.a{background:var(--math);border-color:var(--math)}
+.cell.b{background:var(--amber);border-color:var(--amber)}
+.cell.x{background:var(--math-soft);border-color:var(--math)}
+.cell.x::after{content:"";position:absolute;inset:-1px;background:linear-gradient(to top right,transparent calc(50% - 2px),var(--bad) calc(50% - 2px),var(--bad) calc(50% + 2px),transparent calc(50% + 2px))}
+/* batang & kubus */
+.blocks{display:flex;gap:26px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+.bg2{display:flex;flex-direction:column;align-items:center;gap:6px}
+.bg2 small{font-weight:800;color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.rods{display:flex;gap:6px;align-items:flex-end}
+.rod{width:16px;height:90px;border-radius:4px;background-color:var(--math);background-image:repeating-linear-gradient(to bottom,transparent 0 8px,var(--card) 8px 9px)}
+.cubes{display:grid;grid-template-columns:repeat(3,18px);gap:5px}
+.cube{width:18px;height:18px;border-radius:4px;background:var(--amber)}
+/* kelompok */
+.grps{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.grp2{display:grid;grid-template-columns:repeat(5,12px);gap:4px;padding:8px;border:2px dashed var(--math);border-radius:14px;background:var(--math-soft);justify-content:center}
+.grp2 i{width:12px;height:12px;border-radius:50%;background:var(--math)}
+/* bersusun */
+.vert{display:grid;grid-template-columns:44px 84px 84px;font:600 44px/1.15 var(--fd);text-align:center;align-items:center}
+.vert .h{font:800 12px var(--fb);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.vert .ln{grid-column:1/-1;height:4px;background:var(--ink);border-radius:2px;margin:4px 0}
+.vert .q2{color:var(--acc)}
+/* jam */
+.clock{width:min(260px,100%);height:auto}
+.clock .cf{fill:var(--card);stroke:var(--ink);stroke-width:4}
+.clock .cn{fill:var(--ink);font:600 17px var(--fd)}
+.clock .hh{stroke:var(--math)}
+.clock .mh{stroke:var(--read)}
+.clock .cc{fill:var(--ink)}
+
+/* jawaban */
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.opts.wide{grid-template-columns:1fr}
+.opt{all:unset;box-sizing:border-box;cursor:pointer;min-height:70px;padding:10px 12px;border-radius:18px;border:3px solid var(--line);background:var(--card);font:600 28px/1.2 var(--fd);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow-wrap:anywhere;min-width:0;transition:transform .12s}
+.opt:hover:not(:disabled){border-color:var(--acc);transform:translateY(-2px)}
+.opt:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.opt small{font:800 13px var(--fb);color:var(--muted)}
+.opts.emo .opt{font-size:60px;min-height:96px}
+.opts.wide .opt{font:700 21px/1.4 var(--fb);justify-content:flex-start;text-align:left;align-items:flex-start;padding:14px 16px}
+.opt.correct{background:var(--good-soft);border-color:var(--good);animation:pop .35s}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);opacity:.85}
+.opt.dim{opacity:.45}
+.slots{display:flex;flex-wrap:wrap;gap:10px;align-items:center;min-height:68px;padding:10px;border-radius:18px;background:var(--soft);border-bottom:4px solid var(--acc)}
+.bank{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;min-height:58px}
+.tile{all:unset;box-sizing:border-box;cursor:pointer;min-width:52px;height:52px;padding:0 14px;border-radius:14px;background:var(--card);border:3px solid var(--acc);font:600 26px/1 var(--fd);display:inline-flex;align-items:center;justify-content:center;box-shadow:0 3px 0 var(--acc)}
+.tile:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.tile.ghost{visibility:hidden}
+.tile.locked{cursor:default}
+.tile.fin{background:var(--good-soft);border-color:var(--good);box-shadow:0 3px 0 var(--good)}
+.ph{width:52px;height:52px;border-radius:14px;border:3px dashed var(--acc);opacity:.5}
+.dotx{font:700 30px var(--fd);align-self:flex-end}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap}
+.btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:16px;font:600 20px var(--fd);background:var(--acc);color:var(--on);text-align:center}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.btn.alt{background:var(--card);color:var(--ink);border:3px solid var(--line)}
+.btn:disabled,.btn[aria-disabled="true"]{opacity:.4;cursor:default}
+.shake{animation:shake .4s}
+.fb{margin-top:14px;border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;border:2px solid transparent}
+.fb h3{font:600 24px/1.2 var(--fd)}
+.fb p{font-weight:700}
+.fb.good{background:var(--good-soft);border-color:var(--good)}
+.fb.try{background:var(--warn-soft);border-color:var(--amber)}
+.fb.reveal{background:var(--bad-soft);border-color:var(--bad)}
+.fb .btn{align-self:flex-start}
+
+/* hasil */
+.res{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;background:var(--card);border:2px solid var(--line);border-radius:28px;padding:32px 18px}
+.res h1{font:700 36px/1.15 var(--fd)}
+.bigstars{display:flex;gap:6px}
+.bigstars svg{width:72px;height:72px}
+.bigstars .pp{animation:pop .5s both}
+.bigstars .pp:nth-child(2){animation-delay:.15s}.bigstars .pp:nth-child(3){animation-delay:.3s}
+.res .ctrl{justify-content:center}
+
+@keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:440px){
+  .top h1{font-size:34px}
+  .subjects{gap:10px}
+  .sub{padding:14px 14px 12px}
+  .sub .glyph{font-size:38px}
+  .prompt{font-size:30px}
+  .prompt.big{font-size:44px}
+  .vert{grid-template-columns:36px 70px 70px;font-size:38px}
+  .rate svg{width:18px;height:18px}
+  .mg{width:56px;height:56px;font-size:16px}
+}
+</style>
+<div class="wrap" id="app"></div>
+<script>
+(function(){
+'use strict';
+var rnd=function(a,b){return Math.floor(Math.random()*(b-a+1))+a};
+var pick=function(a){return a[rnd(0,a.length-1)]};
+var shuffle=function(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=rnd(0,i);var t=a[i];a[i]=a[j];a[j]=t}return a};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+var MIN='−', TIMES='×';
+var $=function(s){return document.querySelector(s)};
+
+/* ---------- penyimpanan (kenyamanan per perangkat) ---------- */
+var KEY='ayo-belajar-kelas2';
+var save={best:{},sound:true};
+try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);if(o&&o.best){save.best=o.best;save.sound=o.sound!==false}}}catch(e){}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}}
+
+/* ---------- suara ---------- */
+var ac=null;
+function tone(fs){
+  if(!save.sound)return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    var t=ac.currentTime;
+    fs.forEach(function(f,i){
+      var o=ac.createOscillator(),g=ac.createGain();
+      o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,t+i*0.12);
+      g.gain.exponentialRampToValueAtTime(0.15,t+i*0.12+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+i*0.12+0.2);
+      o.connect(g);g.connect(ac.destination);
+      o.start(t+i*0.12);o.stop(t+i*0.12+0.22);
+    });
+  }catch(e){}
+}
+var canSpeak=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
+function say(text,lang){
+  if(!canSpeak)return;
+  try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(text);u.lang=lang;u.rate=0.85;speechSynthesis.speak(u)}catch(e){}
+}
+
+/* ---------- ikon ---------- */
+var STAR_PTS='12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26';
+function starSvg(on,cls){return '<svg viewBox="0 0 24 24" aria-hidden="true" class="'+(cls||'')+'"><polygon points="'+STAR_PTS+'" class="'+(on?'st-on':'st-off')+'" stroke-linejoin="round"/></svg>'}
+function rating(n){var h='<span class="rate" aria-label="'+n+' dari 3 bintang">';for(var i=0;i<3;i++)h+=starSvg(i<n);return h+'</span>'}
+var SPK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+var BACK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ---------- bank kata ---------- */
+function W(i,s,e,en){return {indo:i,syl:s.split('-'),emo:e,en:en||null}}
+var WORDS=[
+W('kucing','ku-cing','🐱','cat'),W('ikan','i-kan','🐟','fish'),W('buku','bu-ku','📖','book'),W('bola','bo-la','⚽','ball'),
+W('apel','a-pel','🍎','apple'),W('jeruk','je-ruk','🍊','orange'),W('pisang','pi-sang','🍌','banana'),W('sapi','sa-pi','🐄','cow'),
+W('bebek','be-bek','🦆','duck'),W('ayam','a-yam','🐔','chicken'),W('mobil','mo-bil','🚗','car'),W('topi','to-pi','🧢','cap'),
+W('sepatu','se-pa-tu','👟','shoe'),W('bunga','bu-nga','🌸','flower'),W('bulan','bu-lan','🌙','moon'),W('matahari','ma-ta-ha-ri','☀️','sun'),
+W('rumah','ru-mah','🏠','house'),W('sepeda','se-pe-da','🚲','bicycle'),W('pensil','pen-sil','✏️','pencil'),W('gajah','ga-jah','🐘','elephant'),
+W('kuda','ku-da','🐴','horse'),W('semut','se-mut','🐜','ant'),W('pohon','po-hon','🌳','tree'),W('susu','su-su','🥛','milk'),
+W('roti','ro-ti','🍞','bread'),W('telur','te-lur','🥚','egg'),W('kunci','kun-ci','🔑','key'),W('payung','pa-yung','☂️','umbrella'),
+W('bintang','bin-tang','⭐','star'),W('kelinci','ke-lin-ci','🐰','rabbit'),W('monyet','mo-nyet','🐒','monkey'),W('singa','si-nga','🦁','lion'),
+W('ular','u-lar','🐍','snake'),W('katak','ka-tak','🐸','frog'),W('buaya','bu-a-ya','🐊','crocodile'),W('anggur','ang-gur','🍇','grapes'),
+W('gitar','gi-tar','🎸','guitar'),W('kapal','ka-pal','🚢','ship'),W('pesawat','pe-sa-wat','✈️','plane'),W('kereta','ke-re-ta','🚆','train'),
+W('hujan','hu-jan','🌧️','rain'),W('awan','a-wan','☁️','cloud'),W('api','a-pi','🔥','fire')
+];
+var EN=WORDS.map(function(w){return {vis:w.emo,indo:w.indo,en:w.en}});
+[['merah','red','🔴'],['biru','blue','🔵'],['hijau','green','🟢'],['kuning','yellow','🟡'],['hitam','black','⚫'],['putih','white','⚪'],['ungu','purple','🟣'],['cokelat','brown','🟤'],
+ ['satu','one','1'],['dua','two','2'],['tiga','three','3'],['empat','four','4'],['lima','five','5'],['enam','six','6'],['tujuh','seven','7'],['delapan','eight','8'],['sembilan','nine','9'],['sepuluh','ten','10'],
+ ['mata','eye','👁️'],['telinga','ear','👂'],['hidung','nose','👃'],['mulut','mouth','👄'],['tangan','hand','✋'],['kaki','foot','🦶']
+].forEach(function(x){EN.push({vis:x[2],indo:x[0],en:x[1]})});
+
+/* ---------- pembuat soal: matematika ---------- */
+function mcNum(correct,cands){
+  var out=[];
+  cands.forEach(function(c){if(isFinite(c)&&c>=0&&c!==correct&&out.indexOf(c)<0)out.push(c)});
+  var pool=shuffle(out).slice(0,3),k=1;
+  while(pool.length<3){var c=correct+(rnd(0,1)?k:-k);if(c>=0&&c!==correct&&pool.indexOf(c)<0)pool.push(c);k++}
+  return shuffle([correct].concat(pool)).map(function(x){return {v:String(x),h:String(x)}});
+}
+function tenFrame(a,b,op){
+  var h='<div class="tf" aria-hidden="true">';
+  for(var i=0;i<20;i++){
+    var c='';
+    if(op==='+')c=i<a?'a':(i<a+b?'b':'');
+    else c=i<a?(i>=a-b?'x':'a'):'';
+    h+='<span class="cell '+c+'"></span>';
+  }
+  return h+'</div>';
+}
+function genTambah20(){
+  var a=rnd(1,15),b=rnd(1,20-a),s=a+b;
+  var ex=(a<10&&s>10&&b>10-a)?(a+' + '+(10-a)+' = 10, lalu 10 + '+(b-(10-a))+' = '+s+'.'):(a+' + '+b+' = '+s+'.');
+  return {key:'t'+a+'+'+b,kind:'choice',label:'Penjumlahan',prompt:a+' + '+b+' = ?',
+    visual:tenFrame(a,b,'+')+'<div class="legend"><span><i class="la"></i>'+a+'</span><span><i class="lb"></i>'+b+'</span></div>',
+    options:mcNum(s,[s-1,s+1,s-2,s+2,Math.abs(a-b)]),answer:String(s),
+    hint:'Hitung maju '+b+' kali, mulai dari '+a+'. Lihat bulatan di gambar.',explain:ex};
+}
+function genKurang20(){
+  var a=rnd(6,20),b=rnd(1,a-1),r=a-b;
+  var ex=(a>10&&r<10&&b>a-10)?(a+' '+MIN+' '+(a-10)+' = 10, lalu 10 '+MIN+' '+(b-(a-10))+' = '+r+'.'):(a+' '+MIN+' '+b+' = '+r+'.');
+  return {key:'k'+a+'-'+b,kind:'choice',label:'Pengurangan',prompt:a+' '+MIN+' '+b+' = ?',
+    visual:tenFrame(a,b,'-')+'<div class="legend"><span><i class="la"></i>'+a+' bulatan</span><span><i class="lx"></i>'+b+' dicoret</span></div>',
+    options:mcNum(r,[r-1,r+1,r+2,r-2,a+b]),answer:String(r),
+    hint:'Ada '+a+' bulatan. Coret '+b+' bulatan, lalu hitung yang tersisa.',explain:ex};
+}
+function vert(a,b,op){
+  var a10=Math.floor(a/10),a1=a%10,b10=Math.floor(b/10),b1=b%10;
+  return '<div class="vert" aria-label="'+a+' '+(op==='+'?'ditambah':'dikurang')+' '+b+'">'+
+    '<span></span><span class="h">Puluhan</span><span class="h">Satuan</span>'+
+    '<span></span><span>'+a10+'</span><span>'+a1+'</span>'+
+    '<span>'+(op==='+'?'+':MIN)+'</span><span>'+b10+'</span><span>'+b1+'</span>'+
+    '<span class="ln"></span><span></span><span class="q2">?</span><span class="q2">?</span></div>';
+}
+function genBersusun(){
+  var add=rnd(0,1)===0,a,b;
+  if(add){
+    var wantCarry=rnd(0,1)===0,n=0;
+    do{a=rnd(11,88);b=rnd(11,99-a);n++}while(((a%10+b%10>=10)!==wantCarry||a+b>99)&&n<300);
+    var a1=a%10,b1=b%10,a10=Math.floor(a/10),b10=Math.floor(b/10),on=a1+b1,car=on>=10,s=a+b;
+    var ex='Satuan: '+a1+' + '+b1+' = '+on+(car?', tulis '+(on%10)+' dan simpan 1 puluhan.':'.')+' Puluhan: '+a10+' + '+b10+(car?' + 1':'')+' = '+(a10+b10+(car?1:0))+'. Jadi '+s+'.';
+    var c=[s+10,s-10,s+1,s-1,(s%10)*10+Math.floor(s/10)];
+    if(car)c.unshift(s-10);
+    return {key:'bt'+a+'+'+b,kind:'choice',label:'Tambah bersusun',prompt:a+' + '+b+' = ?',visual:vert(a,b,'+'),
+      options:mcNum(s,c),answer:String(s),hint:'Jumlahkan satuan dulu, baru puluhan. Kalau satuan lebih dari 9, simpan 1 puluhan.',explain:ex};
+  }
+  var wantBorrow=rnd(0,1)===0,m=0;
+  do{a=rnd(21,99);b=rnd(11,a-1);m++}while(((a%10<b%10)!==wantBorrow)&&m<300);
+  var x1=a%10,y1=b%10,x10=Math.floor(a/10),y10=Math.floor(b/10),r=a-b,bor=x1<y1;
+  var ex2=bor?('Satuan: '+x1+' kurang dari '+y1+', jadi pinjam 1 puluhan: '+(x1+10)+' '+MIN+' '+y1+' = '+(x1+10-y1)+'. Puluhan: '+(x10-1)+' '+MIN+' '+y10+' = '+(x10-1-y10)+'. Jadi '+r+'.')
+    :('Satuan: '+x1+' '+MIN+' '+y1+' = '+(x1-y1)+'. Puluhan: '+x10+' '+MIN+' '+y10+' = '+(x10-y10)+'. Jadi '+r+'.');
+  var c2=[r+10,r-10,r+1,r-1];
+  if(bor)c2.unshift((x10-y10)*10+(y1-x1));
+  return {key:'bk'+a+'-'+b,kind:'choice',label:'Kurang bersusun',prompt:a+' '+MIN+' '+b+' = ?',visual:vert(a,b,'-'),
+    options:mcNum(r,c2),answer:String(r),hint:'Kurangi satuan dulu. Kalau satuan atas lebih kecil, pinjam 1 puluhan.',explain:ex2};
+}
+function genNilaiTempat(){
+  if(rnd(0,1)===0){
+    var n=rnd(11,99);if(n%10===0)n+=rnd(1,9);
+    var t=Math.floor(n/10),o=n%10,sw=o*10+t;
+    var rods='';for(var i=0;i<t;i++)rods+='<span class="rod"></span>';
+    var cubes='';for(var j=0;j<o;j++)cubes+='<span class="cube"></span>';
+    return {key:'v'+n,kind:'choice',label:'Nilai tempat',prompt:'Bilangan berapa ini?',
+      visual:'<div class="blocks" aria-hidden="true"><div class="bg2"><div class="rods">'+rods+'</div><small>'+t+' puluhan</small></div><div class="bg2"><div class="cubes">'+cubes+'</div><small>'+o+' satuan</small></div></div>',
+      options:mcNum(n,[sw,t*10,t+o,n+10,n-10]),answer:String(n),
+      hint:'Satu batang = 10. Satu kubus = 1. Hitung batangnya dulu, lalu kubusnya.',explain:t+' batang = '+(t*10)+', ditambah '+o+' kubus = '+n+'.'};
+  }
+  var digs=shuffle([1,2,3,4,5,6,7,8,9]),len=rnd(2,3),d=digs.slice(0,len),num=Number(d.join(''));
+  var p=rnd(0,len-1),dg=d[p],pos=len-1-p,val=dg*Math.pow(10,pos),names=['satuan','puluhan','ratusan'];
+  var c=[dg,dg*10,dg*100,d[(p+1)%len]];
+  return {key:'n'+num+'_'+dg,kind:'choice',label:'Nilai tempat',prompt:'Pada bilangan '+num+', angka '+dg+' bernilai ...',visual:'',
+    options:mcNum(val,c),answer:String(val),
+    hint:'Lihat posisi angka '+dg+': paling kanan satuan, di sebelahnya puluhan, lalu ratusan.',
+    explain:'Angka '+dg+' ada di tempat '+names[pos]+', jadi nilainya '+dg+' '+TIMES+' '+Math.pow(10,pos)+' = '+val+'.'};
+}
+function genBanding(){
+  var n1=rnd(10,999),n2;
+  var r=rnd(0,9);
+  if(r===0)n2=n1;
+  else if(r<5)n2=Math.max(10,n1+rnd(-9,9));
+  else n2=rnd(10,999);
+  var sym=n1<n2?'<':(n1>n2?'>':'=');
+  var word=sym==='<'?'lebih kecil':(sym==='>'?'lebih besar':'sama dengan');
+  var opts=[['<','lebih kecil'],['>','lebih besar'],['=','sama dengan']].map(function(x){return {v:x[0],h:'<b>'+esc(x[0])+'</b><small>'+x[1]+'</small>'}});
+  return {key:'c'+n1+'_'+n2,kind:'choice',label:'Banding bilangan',prompt:n1+' ___ '+n2,visual:'',options:opts,answer:sym,optClass:'',
+    hint:'Lihat angka paling kiri dulu. Kalau sama, lanjut ke angka di sebelahnya.',
+    explain:n1+' '+word+' '+(sym==='='?'':'dari ')+n2+', jadi tandanya '+sym+'.'};
+}
+function genKali(){
+  var g=rnd(2,5),b=pick([2,3,4,5,10]),p=g*b,h='<div class="grps" aria-hidden="true">';
+  for(var i=0;i<g;i++)h+='<div class="grp2">'+new Array(b+1).join('<i></i>')+'</div>';
+  h+='</div>';
+  return {key:'x'+g+'_'+b,kind:'choice',label:'Kelompok sama',prompt:g+' '+TIMES+' '+b+' = ?',
+    visual:h+'<p class="note">'+g+' kelompok, setiap kelompok '+b+'</p>',
+    options:mcNum(p,[g+b,p+b,p-b,p+g,p-1]),answer:String(p),
+    hint:'Tambahkan '+b+' sebanyak '+g+' kali.',explain:new Array(g+1).join(b+' + ').slice(0,-3)+' = '+p+', jadi '+g+' '+TIMES+' '+b+' = '+p+'.'};
+}
+var NAMES=['Budi','Sari','Dina','Andi','Rina','Doni','Tika','Rafi'];
+var ITEMS=['apel','kelereng','permen','stiker','kue','jeruk'];
+function genCerita(){
+  var t=rnd(0,2),nm=shuffle(NAMES),n=nm[0],m=nm[1],it=pick(ITEMS),a,b,ans,prompt,hint,ex,c;
+  if(t===0){
+    a=rnd(3,14);b=rnd(2,20-a);ans=a+b;
+    prompt=pick([
+      n+' punya '+a+' '+it+'. '+m+' memberi '+n+' '+b+' '+it+' lagi. Berapa '+it+' '+n+' sekarang?',
+      'Di keranjang ada '+a+' '+it+'. Ibu memasukkan '+b+' '+it+' lagi. Berapa '+it+' di keranjang sekarang?']);
+    hint='Kata "lagi" berarti jumlahnya bertambah. Gunakan tambah (+).';
+    ex='Kata "lagi" artinya ditambah: '+a+' + '+b+' = '+ans+'.';
+    c=[a,b,ans+1,ans-1,Math.abs(a-b)];
+  }else if(t===1){
+    a=rnd(7,20);b=rnd(2,a-1);ans=a-b;
+    prompt=pick([
+      n+' punya '+a+' '+it+'. '+n+' memberikan '+b+' '+it+' kepada '+m+'. Berapa '+it+' '+n+' sekarang?',
+      'Ada '+a+' '+it+' di atas meja. Sebanyak '+b+' '+it+' diambil Adik. Berapa '+it+' yang tersisa?']);
+    hint='Kalau barang diberikan atau diambil, jumlahnya berkurang. Gunakan kurang ('+MIN+').';
+    ex='Barangnya berkurang, jadi dikurang: '+a+' '+MIN+' '+b+' = '+ans+'.';
+    c=[a+b,ans+1,ans-1,ans+2,b];
+  }else{
+    a=rnd(2,5);b=pick([2,3,4,5,10]);ans=a*b;
+    prompt=pick([
+      'Ada '+a+' kotak. Setiap kotak berisi '+b+' '+it+'. Berapa '+it+' seluruhnya?',
+      'Ibu membeli '+a+' kantong. Setiap kantong berisi '+b+' '+it+'. Berapa '+it+' yang dibeli Ibu?']);
+    hint='Setiap tempat isinya sama. Tambahkan '+b+' sebanyak '+a+' kali, atau gunakan kali ('+TIMES+').';
+    ex=a+' kelompok masing-masing '+b+': '+a+' '+TIMES+' '+b+' = '+ans+'.';
+    c=[a+b,ans+b,ans-b,ans+a,ans-1];
+  }
+  return {key:prompt,kind:'choice',label:'Soal cerita',prompt:prompt,promptClass:'story',visual:'',
+    options:mcNum(ans,c),answer:String(ans),hint:hint,explain:ex};
+}
+function clockSvg(h,m){
+  var cx=100,cy=100,num='',i;
+  for(i=1;i<=12;i++){
+    var ang=i*30*Math.PI/180;
+    num+='<text x="'+(cx+Math.sin(ang)*74).toFixed(1)+'" y="'+(cy-Math.cos(ang)*74+6).toFixed(1)+'" text-anchor="middle" class="cn">'+i+'</text>';
+  }
+  var ma=m*6,ha=(h%12)*30+m*0.5;
+  function hand(a,len,w,cls){var r=a*Math.PI/180;return '<line x1="100" y1="100" x2="'+(cx+Math.sin(r)*len).toFixed(1)+'" y2="'+(cy-Math.cos(r)*len).toFixed(1)+'" class="'+cls+'" stroke-width="'+w+'" stroke-linecap="round"/>'}
+  return '<svg viewBox="0 0 200 200" class="clock" role="img" aria-label="Jam analog"><circle cx="100" cy="100" r="94" class="cf"/>'+num+hand(ha,44,7,'hh')+hand(ma,68,4,'mh')+'<circle cx="100" cy="100" r="6" class="cc"/></svg>';
+}
+function fmtTime(h,m){return (h<10?'0':'')+h+'.'+(m<10?'0':'')+m}
+function genJam(){
+  var h=rnd(1,12),m=pick([0,0,30,30,15,45]),ans=fmtTime(h,m),c=[];
+  [0,15,30,45].forEach(function(x){if(x!==m)c.push(fmtTime(h,x))});
+  c.push(fmtTime(h%12+1,m));c.push(fmtTime(h===1?12:h-1,m));
+  var opts=shuffle(c).slice(0,3);opts.push(ans);
+  var where={0:'angka 12',15:'angka 3',30:'angka 6',45:'angka 9'}[m];
+  var hint='Jarum pendek (biru) menunjukkan jam. Jarum panjang (merah) menunjukkan menit. Jarum panjang ada di '+where+'.';
+  var ex={0:'Jarum panjang di angka 12, jadi tepat pukul '+h+'.',15:'Jarum panjang di angka 3, artinya lewat 15 menit dari jam '+h+'.',30:'Jarum panjang di angka 6, artinya lewat 30 menit dari jam '+h+'.',45:'Jarum panjang di angka 9, artinya lewat 45 menit dari jam '+h+'.'}[m];
+  return {key:'j'+ans,kind:'choice',label:'Membaca jam',prompt:'Pukul berapa ini?',visual:clockSvg(h,m)+'<p class="note">Jarum pendek = jam (biru) &middot; Jarum panjang = menit (merah)</p>',
+    options:shuffle(opts).map(function(x){return {v:x,h:x}}),answer:ans,hint:hint,explain:ex+' Jadi '+ans+'.'};
+}
+
+/* ---------- pembuat soal: membaca ---------- */
+function shuffleDiff(arr){
+  var s=shuffle(arr),n=0;
+  while(s.join('|')===arr.join('|')&&n<20){s=shuffle(arr);n++}
+  return s;
+}
+function genSukuKata(){
+  var w=pick(WORDS.filter(function(x){return x.syl.length>=2}));
+  return {key:'sk'+w.indo,kind:'build',label:'Suku kata',prompt:'Susun suku kata menjadi kata',promptClass:'small',
+    visual:'<div class="emoji" aria-hidden="true">'+w.emo+'</div>',speak:{text:w.indo,lang:'id-ID'},
+    tiles:shuffleDiff(w.syl),target:w.syl,join:'',
+    hint:'Ucapkan pelan-pelan: '+w.syl.join('... ')+'. Mulai dari suku kata pertama.',explain:w.syl.join(' + ')+' = '+w.indo+'.'};
+}
+function genBacaKata(){
+  var w=pick(WORDS),others=shuffle(WORDS.filter(function(x){return x!==w}));
+  var same=others.filter(function(x){return x.indo[0]===w.indo[0]}).slice(0,1);
+  var rest=others.filter(function(x){return same.indexOf(x)<0});
+  var ds=same.concat(rest).slice(0,3);
+  var ex=w.syl.join('-')+' dibaca '+w.indo+'.';
+  if(rnd(0,1)===0){
+    return {key:'bk'+w.indo,kind:'choice',label:'Baca kata',prompt:'Gambar apa ini?',
+      visual:'<div class="emoji" aria-hidden="true">'+w.emo+'</div>',speak:{text:w.indo,lang:'id-ID'},
+      options:shuffle([w].concat(ds)).map(function(x){return {v:x.indo,h:esc(x.indo)}}),answer:w.indo,
+      hint:'Baca satu per satu. Kata yang benar diawali huruf "'+w.indo[0]+'".',explain:ex};
+  }
+  return {key:'bg'+w.indo,kind:'choice',label:'Baca kata',prompt:w.indo,promptClass:'big',
+    visual:'<p class="note">Pilih gambar yang cocok dengan kata ini</p>',speak:{text:w.indo,lang:'id-ID'},
+    options:shuffle([w].concat(ds)).map(function(x){return {v:x.emo,h:x.emo}}),answer:w.emo,optClass:'emo',
+    hint:'Baca pelan: '+w.syl.join('... ')+'. Gambar mana yang cocok?',explain:ex};
+}
+var ALPHA='abcdefghijklmnoprstuwy'.split('');
+function genHuruf(){
+  var w=pick(WORDS),awal=rnd(0,1)===0,l=awal?w.indo[0]:w.indo[w.indo.length-1];
+  var ds=shuffle(ALPHA.filter(function(x){return x!==l})).slice(0,3);
+  var shown=awal?'<b>'+esc(l)+'</b>'+esc(w.indo.slice(1)):esc(w.indo.slice(0,-1))+'<b>'+esc(l)+'</b>';
+  return {key:'h'+w.indo+(awal?'a':'z'),kind:'choice',label:'Huruf awal & akhir',
+    prompt:(awal?'Kata ini diawali huruf apa?':'Kata ini diakhiri huruf apa?'),promptClass:'small',
+    visual:'<div class="emoji" aria-hidden="true">'+w.emo+'</div>',speak:{text:w.indo,lang:'id-ID'},
+    options:shuffle([l].concat(ds)).map(function(x){return {v:x,h:esc(x.toUpperCase()+' '+x)}}),answer:l,
+    hint:'Ucapkan nama gambarnya pelan-pelan. Dengarkan bunyi '+(awal?'pertama':'terakhir')+'.',
+    explain:'Kata '+w.indo+' '+(awal?'diawali':'diakhiri')+' huruf '+l.toUpperCase()+'.'};
+}
+var PASSAGES=[
+ {s:['Ani punya kucing kecil.','Nama kucing itu Pus.','Pus suka minum susu.','Setiap pagi Ani memberi Pus susu.'],
+  q:[['Siapa nama kucing Ani?','Pus',['Mimi','Tom'],1],['Apa yang diberikan Ani setiap pagi?','susu',['nasi','ikan'],3]]},
+ {s:['Hari ini hujan deras.','Dodi tidak bisa bermain bola di lapangan.','Dodi duduk di dalam rumah.','Ia membaca buku cerita bergambar.'],
+  q:[['Mengapa Dodi tidak bermain bola?','Karena hujan deras',['Karena sakit','Karena lapangan jauh'],0],['Apa yang Dodi lakukan di rumah?','Membaca buku',['Menggambar','Tidur siang'],3]]},
+ {s:['Ibu pergi ke pasar.','Ibu membeli tiga buah apel, dua buah jeruk, dan satu sisir pisang.','Ibu membawa belanjaan dalam tas.'],
+  q:[['Ibu pergi ke mana?','Ke pasar',['Ke sekolah','Ke kebun'],0],['Berapa buah apel yang dibeli Ibu?','Tiga',['Dua','Satu'],1]]},
+ {s:['Sari dan Rina berangkat ke sekolah naik sepeda.','Sampai di sekolah, mereka menyimpan sepeda di tempat parkir.','Lalu mereka masuk kelas dan memberi salam kepada Bu Guru.'],
+  q:[['Sari dan Rina naik apa ke sekolah?','Sepeda',['Mobil','Kereta'],0],['Kepada siapa mereka memberi salam?','Bu Guru',['Ibu','Kakak'],2]]},
+ {s:['Di kebun ada pohon mangga yang besar.','Buahnya banyak dan manis.','Kakek memanjat tangga untuk memetik mangga.','Kakek memberi mangga kepada cucunya.'],
+  q:[['Bagaimana rasa buah mangga itu?','Manis',['Asam','Pahit'],1],['Siapa yang memetik mangga?','Kakek',['Ayah','Adik'],2]]},
+ {s:['Pagi hari, matahari terbit.','Ayam jantan berkokok.','Ayah bangun, lalu menyiram tanaman di halaman.'],
+  q:[['Apa yang berkokok?','Ayam jantan',['Burung','Bebek'],1],['Apa yang dilakukan Ayah di halaman?','Menyiram tanaman',['Membaca koran','Memberi makan ikan'],2]]},
+ {s:['Budi sakit gigi karena terlalu banyak makan permen.','Ibu mengajak Budi ke dokter gigi.','Dokter berpesan agar Budi rajin menggosok gigi.'],
+  q:[['Mengapa gigi Budi sakit?','Terlalu banyak makan permen',['Jatuh dari sepeda','Minum es'],0],['Apa pesan dokter untuk Budi?','Rajin menggosok gigi',['Banyak makan permen','Tidur lebih awal'],2]]}
+];
+function genCerita2(){
+  var p=pick(PASSAGES),q=pick(p.q),text=p.s.join(' ');
+  return {key:q[0],kind:'choice',label:'Baca dan jawab',prompt:q[0],promptClass:'small',
+    visual:'<div class="passage">'+p.s.map(esc).join(' ')+'</div>',speak:{text:text,lang:'id-ID',label:'Bacakan cerita'},
+    options:shuffle([q[1]].concat(q[2])).map(function(x){return {v:x,h:esc(x)}}),answer:q[1],optClass:'wide',
+    hint:'Baca lagi ceritanya pelan-pelan. Cari kalimat yang menjawab pertanyaan.',explain:'Jawabannya ada di kalimat ini: "'+p.s[q[3]]+'"'};
+}
+
+/* ---------- pembuat soal: menulis ---------- */
+function genSusunHuruf(){
+  var w=pick(WORDS.filter(function(x){return x.indo.length>=3&&x.indo.length<=7})),L=w.indo.split('');
+  return {key:'sh'+w.indo,kind:'build',label:'Susun huruf',prompt:'Susun huruf menjadi kata',promptClass:'small',
+    visual:'<div class="emoji" aria-hidden="true">'+w.emo+'</div>',speak:{text:w.indo,lang:'id-ID'},
+    tiles:shuffleDiff(L),target:L,join:'',
+    hint:'Ucapkan nama gambarnya pelan-pelan. Huruf pertamanya "'+L[0]+'".',explain:L.join(' - ')+' menjadi '+w.indo+'.'};
+}
+var SENTS=['Ibu memasak nasi di dapur','Adik bermain bola di halaman','Aku suka makan buah apel','Kakak membaca buku cerita','Ayah pergi bekerja naik motor','Kami belajar di sekolah','Kucing itu minum susu','Burung terbang di langit biru','Nenek menanam bunga mawar','Budi memakai sepatu baru','Ani menggambar rumah dan pohon','Kakek duduk di teras rumah'];
+function genKalimat(){
+  var s=pick(SENTS),ws=s.split(' ');
+  return {key:'sk'+s,kind:'build',label:'Susun kalimat',prompt:'Susun kata menjadi kalimat',promptClass:'small',visual:'',
+    tiles:shuffleDiff(ws),target:ws,join:' ',suffix:'.',
+    hint:'Kalimat dimulai dengan kata berhuruf kapital. Pikirkan: siapa yang melakukan apa?',explain:s+'.'};
+}
+var KAL=['Ani membeli buku di toko.','Ibu memasak nasi goreng.','Siapa namamu?','Di mana rumah nenek?','Adik bermain bola di lapangan.','Kapan kamu pergi ke sekolah?','Ayah membaca koran di teras.','Kakak sedang menggambar bunga.','Apakah kamu suka makan apel?','Budi dan Sari belajar bersama.'];
+function genKapital(){
+  var s=pick(KAL),end=s.slice(-1),body=s.slice(0,-1),ws=body.split(' ');
+  var vars=[];
+  vars.push(body[0].toLowerCase()+body.slice(1)+end);
+  vars.push(body);
+  vars.push(body+(end==='?'?'.':'?'));
+  var last=ws[ws.length-1],ws2=ws.slice();ws2[ws2.length-1]=last[0].toUpperCase()+last.slice(1);
+  vars.push(ws2.join(' ')+end);
+  vars=vars.filter(function(v,i){return v!==s&&vars.indexOf(v)===i});
+  var wrong=shuffle(vars).slice(0,2);
+  return {key:'kp'+s,kind:'choice',label:'Huruf kapital & tanda baca',prompt:'Mana kalimat yang benar?',promptClass:'small',visual:'',
+    options:shuffle([s].concat(wrong)).map(function(x){return {v:x,h:esc(x)}}),answer:s,optClass:'wide',
+    hint:'Awal kalimat memakai huruf kapital. Kalimat tanya diakhiri tanda tanya (?), kalimat biasa diakhiri titik (.).',
+    explain:'Yang benar: "'+s+'"'};
+}
+var LAWAN=[['besar','kecil'],['panjang','pendek'],['tinggi','rendah'],['panas','dingin'],['naik','turun'],['terang','gelap'],['basah','kering'],['cepat','lambat'],['siang','malam'],['tua','muda'],['kotor','bersih'],['buka','tutup'],['banyak','sedikit'],['jauh','dekat'],['baru','lama'],['masuk','keluar']];
+function genLawan(){
+  var p=pick(LAWAN),flip=rnd(0,1),q=p[flip],a=p[1-flip];
+  var all=[];LAWAN.forEach(function(x){if(x!==p){all.push(x[0]);all.push(x[1])}});
+  return {key:'lw'+q,kind:'choice',label:'Lawan kata',prompt:'Lawan kata dari "'+q+'" adalah ...',promptClass:'small',visual:'',
+    options:shuffle([a].concat(shuffle(all).slice(0,3))).map(function(x){return {v:x,h:esc(x)}}),answer:a,
+    hint:'Lawan kata artinya kebalikan. Contoh: siang lawan katanya malam.',explain:q+' lawan katanya '+a+'.'};
+}
+
+/* ---------- pembuat soal: bahasa Inggris ---------- */
+function visHtml(x){return '<div class="emoji" aria-hidden="true">'+esc(x.vis)+'</div>'}
+function genEnGambar(){
+  var w=pick(EN),ds=shuffle(EN.filter(function(x){return x.en!==w.en})).slice(0,3);
+  return {key:'eg'+w.en,kind:'choice',label:'Kosakata',prompt:'Apa bahasa Inggrisnya?',promptClass:'small',visual:visHtml(w),
+    speak:{text:w.en,lang:'en-US',label:'Dengar'},after:{text:w.en,lang:'en-US'},
+    options:shuffle([w].concat(ds)).map(function(x){return {v:x.en,h:esc(x.en)}}),answer:w.en,
+    hint:'Kata ini diawali huruf "'+w.en[0]+'". Tekan tombol dengar untuk mendengar bunyinya.',explain:w.vis+' = '+w.en+' ('+w.indo+').'};
+}
+function genEnDengar(){
+  var w=pick(EN),ds=shuffle(EN.filter(function(x){return x.vis!==w.vis})).slice(0,3);
+  return {key:'ed'+w.en,kind:'choice',label:'Dengar & pilih',prompt:canSpeak?'Dengarkan, lalu pilih gambarnya':'Pilih gambar untuk kata: '+w.en,promptClass:'small',visual:'',
+    speak:canSpeak?{text:w.en,lang:'en-US',label:'Dengar lagi'}:null,auto:canSpeak?{text:w.en,lang:'en-US'}:null,after:{text:w.en,lang:'en-US'},
+    options:shuffle([w].concat(ds)).map(function(x){return {v:x.vis,h:esc(x.vis)}}),answer:w.vis,optClass:'emo',
+    hint:canSpeak?'Tekan tombol dengar lagi. Perhatikan bunyi huruf pertama.':'Kata ini diawali huruf "'+w.en[0]+'".',explain:w.en+' artinya '+w.indo+'.'};
+}
+function genEnEja(){
+  var w=pick(EN.filter(function(x){return /^[a-z]{3,7}$/.test(x.en)})),L=w.en.split('');
+  return {key:'ee'+w.en,kind:'build',label:'Eja kata',prompt:'Susun huruf: apa bahasa Inggrisnya '+w.indo+'?',promptClass:'small',visual:visHtml(w),
+    speak:{text:w.en,lang:'en-US',label:'Dengar'},after:{text:w.en,lang:'en-US'},
+    tiles:shuffleDiff(L),target:L,join:'',
+    hint:'Huruf pertamanya "'+L[0]+'". Tekan tombol dengar untuk membantu.',explain:L.join(' - ')+' = '+w.en+'.'};
+}
+function genEnArti(){
+  var w=pick(EN),ds=shuffle(EN.filter(function(x){return x.indo!==w.indo})).slice(0,3);
+  return {key:'ea'+w.en,kind:'choice',label:'Arti kata',prompt:w.en,promptClass:'big',visual:'<p class="note">Apa artinya dalam bahasa Indonesia?</p>',
+    speak:{text:w.en,lang:'en-US',label:'Dengar'},after:{text:w.en,lang:'en-US'},
+    options:shuffle([w].concat(ds)).map(function(x){return {v:x.indo,h:esc(x.indo)}}),answer:w.indo,
+    hint:'Tekan tombol dengar. Bayangkan gambarnya: '+w.vis,explain:w.en+' artinya '+w.indo+' '+w.vis+'.'};
+}
+
+/* ---------- daftar pelajaran ---------- */
+var SUBJECTS=[
+ {id:'math',name:'Matematika',glyph:'7+5',blurb:'Berhitung, bilangan, jam',modes:[
+  {id:'m-tambah',g:'7+5',t:'Tambah sampai 20',d:'Hitung bulatan di bingkai',gen:genTambah20},
+  {id:'m-kurang',g:'12'+MIN+'4',t:'Kurang sampai 20',d:'Coret bulatan, hitung sisanya',gen:genKurang20},
+  {id:'m-susun',g:'34+28',t:'Tambah & kurang bersusun',d:'Puluhan dan satuan, sampai 99',gen:genBersusun},
+  {id:'m-tempat',g:'4|7',t:'Nilai tempat',d:'Satuan, puluhan, ratusan',gen:genNilaiTempat},
+  {id:'m-banding',g:'<  >',t:'Banding bilangan',d:'Mana yang lebih besar?',gen:genBanding},
+  {id:'m-kali',g:'3'+TIMES+'4',t:'Kelompok sama',d:'Awal perkalian',gen:genKali},
+  {id:'m-cerita',g:'Cerita',t:'Soal cerita',d:'Tambah, kurang, atau kali?',gen:genCerita},
+  {id:'m-jam',g:'10:30',t:'Membaca jam',d:'Jarum pendek dan jarum panjang',gen:genJam}]},
+ {id:'read',name:'Membaca',glyph:'ba·ju',blurb:'Suku kata, kata, cerita',modes:[
+  {id:'r-suku',g:'ba-ju',t:'Susun suku kata',d:'Gabungkan suku kata jadi kata',gen:genSukuKata},
+  {id:'r-kata',g:'Aa',t:'Baca kata',d:'Cocokkan gambar dan kata',gen:genBacaKata},
+  {id:'r-huruf',g:'K..',t:'Huruf awal & akhir',d:'Bunyi pertama dan terakhir',gen:genHuruf},
+  {id:'r-cerita',g:'Cerita',t:'Baca dan jawab',d:'Bacaan pendek dengan pertanyaan',gen:genCerita2}]},
+ {id:'write',name:'Menulis',glyph:'Aa',blurb:'Huruf, kalimat, kata',modes:[
+  {id:'w-huruf',g:'k-u-d-a',t:'Susun huruf',d:'Huruf acak jadi kata',gen:genSusunHuruf},
+  {id:'w-kalimat',g:'Kalimat',t:'Susun kalimat',d:'Kata acak jadi kalimat',gen:genKalimat},
+  {id:'w-kapital',g:'A.?',t:'Kapital & tanda baca',d:'Pilih kalimat yang benar',gen:genKapital},
+  {id:'w-lawan',g:'⇄',t:'Lawan kata',d:'Besar lawannya kecil',gen:genLawan}]},
+ {id:'eng',name:'Bahasa Inggris',glyph:'Hi!',blurb:'Kosakata dan ejaan',modes:[
+  {id:'e-gambar',g:'Cat',t:'Gambar ke kata',d:'Apa bahasa Inggrisnya?',gen:genEnGambar},
+  {id:'e-dengar',g:'Listen',t:'Dengar & pilih',d:'Dengar kata, pilih gambar',gen:genEnDengar},
+  {id:'e-eja',g:'C-A-T',t:'Eja kata',d:'Susun huruf bahasa Inggris',gen:genEnEja},
+  {id:'e-arti',g:'dog=?',t:'Arti kata',d:'Bahasa Inggris ke Indonesia',gen:genEnArti}]}
+];
+SUBJECTS.forEach(function(s){s.modes.forEach(function(m){m.subject=s.id;m.len=8})});
+function subj(id){return SUBJECTS.filter(function(s){return s.id===id})[0]}
+function best(id){return save.best[id]||0}
+function totalStars(){var n=0;SUBJECTS.forEach(function(s){s.modes.forEach(function(m){n+=best(m.id)})});return n}
+
+/* ---------- tampilan ---------- */
+var app=$('#app');
+var S={screen:'home',subject:null,mode:null};
+var G=null;
+
+function renderHome(){
+  S.screen='home';
+  var h='<header class="top"><div><h1>Ayo Belajar</h1><p>Kelas 2 SD &middot; 10 menit sehari sudah cukup</p></div>'+
+    '<div class="side"><button class="pill" data-act="sound" aria-pressed="'+(save.sound?'true':'false')+'">Suara: '+(save.sound?'nyala':'mati')+'</button>'+
+    '<span class="pill">'+starSvg(true)+totalStars()+'</span></div></header><div class="subjects">';
+  SUBJECTS.forEach(function(s){
+    var got=0;s.modes.forEach(function(m){got+=best(m.id)});
+    h+='<button class="sub" data-s="'+s.id+'" data-act="subject" data-id="'+s.id+'"><span class="glyph" aria-hidden="true">'+esc(s.glyph)+'</span><h2>'+s.name+'</h2><span class="bl">'+s.blurb+'</span><span class="pr">'+starSvg(true)+got+' / '+(s.modes.length*3)+'</span></button>';
+  });
+  h+='</div><details class="tips"><summary>Untuk orang tua</summary><ul>'+
+    '<li>Belajar 10 sampai 15 menit setiap hari lebih efektif daripada satu jam sekali.</li>'+
+    '<li>Duduk bersama anak. Kalau jawabannya salah, minta anak membaca petunjuk lalu menjelaskan dengan kata-katanya sendiri.</li>'+
+    '<li>Perhatikan bintang di setiap latihan. Latihan dengan satu bintang adalah yang perlu diulang lebih sering.</li>'+
+    '<li>Tombol speaker membacakan kata atau cerita. Pakai untuk membantu anak yang belum lancar membaca.</li>'+
+    '<li>Pujilah usaha anak, bukan hanya nilai.</li></ul></details>';
+  app.innerHTML=h;window.scrollTo(0,0);
+}
+function renderSubject(id){
+  S.screen='subject';S.subject=id;
+  var s=subj(id);
+  var h='<div data-s="'+id+'"><div class="shead"><button class="back" data-act="home" aria-label="Kembali">'+BACK+'</button><h1>'+s.name+'</h1></div><div class="modes">';
+  s.modes.forEach(function(m){
+    h+='<button class="mrow" data-act="mode" data-id="'+m.id+'"><span class="mg" aria-hidden="true">'+esc(m.g)+'</span><span class="mt"><b>'+esc(m.t)+'</b><span>'+esc(m.d)+'</span></span>'+rating(best(m.id))+'</button>';
+  });
+  app.innerHTML=h+'</div></div>';window.scrollTo(0,0);
+}
+function findMode(id){var r=null;SUBJECTS.forEach(function(s){s.modes.forEach(function(m){if(m.id===id)r=m})});return r}
+
+function startRound(mode){
+  var qs=[],seen={},tries=0;
+  while(qs.length<mode.len&&tries<300){tries++;var q=mode.gen(),k=q.key||q.prompt;if(seen[k])continue;seen[k]=1;qs.push(q)}
+  G={mode:mode,qs:qs,i:0,score:0,tries:0,state:'ask',wrong:{},placed:[],fb:null};
+  S.screen='game';
+  renderQuestion();
+}
+function renderQuestion(){
+  var q=G.qs[G.i];
+  G.tries=0;G.state='ask';G.wrong={};G.placed=[];G.fb=null;
+  var h='<div data-s="'+G.mode.subject+'"><div class="gtop"><button class="back" data-act="quit" aria-label="Keluar dari latihan">'+BACK+'</button>'+
+    '<div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="'+G.qs.length+'" aria-valuenow="'+G.i+'"><i style="width:'+(G.i/G.qs.length*100)+'%"></i></div><span class="pc">'+(G.i+1)+'/'+G.qs.length+'</span></div>'+
+    '<article class="q"><span class="qlabel">'+esc(q.label)+'</span>';
+  if(q.speak&&canSpeak)h+='<button class="spk" data-act="speak">'+SPK+esc(q.speak.label||'Dengar')+'</button>';
+  h+='<h2 class="prompt '+(q.promptClass||'')+'">'+esc(q.prompt)+'</h2>';
+  if(q.visual)h+='<div class="visual">'+q.visual+'</div>';
+  h+='<div id="ans"></div></article><div id="fb"></div></div>';
+  app.innerHTML=h;
+  renderAns();renderFb();
+  window.scrollTo(0,0);
+  if(q.auto)setTimeout(function(){say(q.auto.text,q.auto.lang)},250);
+}
+function renderAns(){
+  var q=G.qs[G.i],el=$('#ans');if(!el)return;
+  var h='',i;
+  if(q.kind==='choice'){
+    h='<div class="opts '+(q.optClass||'')+'">';
+    q.options.forEach(function(o,idx){
+      var c='opt',dis=false;
+      if(G.state!=='ask'){dis=true;c+=o.v===q.answer?' correct':(G.wrong[o.v]?' wrong':' dim')}
+      else if(G.wrong[o.v]){c+=' wrong';dis=true}
+      h+='<button class="'+c+'" data-act="opt" data-i="'+idx+'"'+(dis?' disabled':'')+'>'+o.h+'</button>';
+    });
+    h+='</div>';
+  }else{
+    var n=q.target.length,done=G.state!=='ask';
+    h='<div class="slots" id="slots">';
+    for(i=0;i<n;i++){
+      if(i<G.placed.length)h+='<button class="tile '+(done?'locked'+(G.state==='right'?' fin':''):'')+'" data-act="unplace" data-p="'+i+'"'+(done?' disabled':'')+'>'+esc(q.tiles[G.placed[i]])+'</button>';
+      else h+='<span class="ph"></span>';
+    }
+    if(q.suffix)h+='<span class="dotx">'+esc(q.suffix)+'</span>';
+    h+='</div><div class="bank">';
+    q.tiles.forEach(function(t,idx){
+      var used=G.placed.indexOf(idx)>=0;
+      h+=used?'<span class="tile ghost">'+esc(t)+'</span>':'<button class="tile" data-act="place" data-i="'+idx+'"'+(done?' disabled':'')+'>'+esc(t)+'</button>';
+    });
+    h+='</div>';
+    if(!done)h+='<div class="ctrl"><button class="btn" data-act="check"'+(G.placed.length===n?'':' disabled')+'>Periksa</button><button class="btn alt" data-act="clear">Ulangi</button></div>';
+  }
+  el.innerHTML=h;
+}
+var PRAISE=['Benar! Hebat!','Tepat sekali!','Mantap, kamu pintar!','Betul! Terus semangat!'];
+function renderFb(){
+  var q=G.qs[G.i],el=$('#fb');if(!el)return;
+  if(!G.fb){el.innerHTML='';return}
+  var f=G.fb,last=G.i===G.qs.length-1,h='<div class="fb '+f.kind+'" role="status"><h3>'+esc(f.title)+'</h3><p>'+f.text+'</p>';
+  if(G.state!=='ask')h+='<button class="btn" data-act="next">'+(last?'Lihat hasil':'Lanjut')+'</button>';
+  el.innerHTML=h+'</div>';
+  var box=el.firstChild;
+  try{box.scrollIntoView({block:'nearest',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}catch(e){}
+}
+function judge(ok,valueKey){
+  var q=G.qs[G.i];
+  if(ok){
+    if(G.tries===0)G.score++;
+    G.state='right';tone([523,659,784]);
+    G.fb={kind:'good',title:G.tries===0?pick(PRAISE):'Benar! Kali ini berhasil.',text:q.explain?esc(q.explain):''};
+    if(q.after)say(q.after.text,q.after.lang);
+  }else{
+    G.tries++;
+    if(valueKey!==undefined)G.wrong[valueKey]=true;
+    if(G.tries>=2){
+      G.state='reveal';tone([300,240]);
+      var ans=q.kind==='choice'?'':'';
+      G.fb={kind:'reveal',title:'Tidak apa-apa, ini jawabannya.',text:esc(q.explain||'')+'<br>Salah itu bagian dari belajar. Kita coba soal berikutnya.'};
+      if(q.kind==='build')G.placed=targetOrder(q);
+      if(q.after)say(q.after.text,q.after.lang);
+    }else{
+      tone([300,240]);
+      G.fb={kind:'try',title:'Belum tepat. Coba lagi!',text:'Petunjuk: '+esc(q.hint)};
+    }
+  }
+  renderAns();renderFb();
+  if(!ok&&G.state==='ask'&&q.kind==='build'){var s=$('#slots');if(s){s.classList.add('shake')}}
+}
+function targetOrder(q){
+  var used={},out=[];
+  q.target.forEach(function(t){
+    for(var i=0;i<q.tiles.length;i++){if(!used[i]&&q.tiles[i]===t){used[i]=1;out.push(i);break}}
+  });
+  return out;
+}
+function showResult(){
+  S.screen='result';
+  var n=G.qs.length,ratio=G.score/n,stars=ratio>=0.85?3:(ratio>=0.6?2:1),id=G.mode.id,prev=best(id);
+  if(stars>prev){save.best[id]=stars;persist()}
+  var msg=stars===3?'Luar biasa! Kamu juara!':(stars===2?'Bagus! Sedikit lagi sempurna.':'Terus berlatih, ya. Kamu pasti bisa!');
+  var st='';for(var i=0;i<3;i++)st+=starSvg(i<stars,'pp');
+  app.innerHTML='<div data-s="'+G.mode.subject+'"><div class="res"><div class="bigstars" aria-label="'+stars+' dari 3 bintang">'+st+'</div><h1>'+msg+'</h1>'+
+    '<p>'+G.score+' dari '+n+' soal benar di percobaan pertama.'+(stars>prev&&prev>0?' Bintangmu bertambah!':'')+'</p>'+
+    '<div class="ctrl"><button class="btn" data-act="again">Main lagi</button><button class="btn alt" data-act="backsubj">Pilih latihan lain</button></div></div></div>';
+  window.scrollTo(0,0);
+  tone([523,659,784,1047]);
+}
+
+/* ---------- aksi ---------- */
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-act]');if(!t)return;
+  var a=t.getAttribute('data-act');
+  if(a==='subject')return renderSubject(t.getAttribute('data-id'));
+  if(a==='home')return renderHome();
+  if(a==='mode'){S.mode=t.getAttribute('data-id');return startRound(findMode(S.mode))}
+  if(a==='backsubj')return renderSubject(G.mode.subject);
+  if(a==='again')return startRound(G.mode);
+  if(a==='quit')return renderSubject(G.mode.subject);
+  if(a==='sound'){save.sound=!save.sound;persist();return renderHome()}
+  if(!G)return;
+  var q=G.qs[G.i];
+  if(a==='speak'){if(q.speak)say(q.speak.text,q.speak.lang);return}
+  if(a==='next'){
+    if(G.i+1<G.qs.length){G.i++;renderQuestion()}else showResult();
+    return;
+  }
+  if(G.state!=='ask')return;
+  if(a==='opt'){
+    var o=q.options[Number(t.getAttribute('data-i'))];
+    return judge(o.v===q.answer,o.v);
+  }
+  if(a==='place'){
+    if(G.placed.length<q.target.length){G.placed.push(Number(t.getAttribute('data-i')));G.fb=null;renderAns();renderFb()}
+    return;
+  }
+  if(a==='unplace'){G.placed.splice(Number(t.getAttribute('data-p')),1);G.fb=null;renderAns();renderFb();return}
+  if(a==='clear'){G.placed=[];G.fb=null;renderAns();renderFb();return}
+  if(a==='check'){
+    var got=G.placed.map(function(i){return q.tiles[i]}).join(q.join);
+    return judge(got===q.target.join(q.join));
+  }
+});
+renderHome();
+})();
+</script>
