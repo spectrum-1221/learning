@@ -6,31 +6,98 @@
 <title>Belajar Kelas 2</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap">
 <style>
-:root{--bg:#EEF3FB;--card:#fff;--ink:#18213D;--muted:#58627F;--line:#D3DBEE;--a:#2B56E0;--a-soft:#DCE6FF;--b:#7C3FD6;--b-soft:#EADCFF;--on:#fff}
-@media (prefers-color-scheme:dark){:root{--bg:#0F1629;--card:#192240;--ink:#EEF2FF;--muted:#A5B0D0;--line:#2B3862;--a:#86A5FF;--a-soft:#1F2D62;--b:#BE9BFF;--b-soft:#34265F;--on:#0F1629;color-scheme:dark}}
+/* Layout: satu kolom. Atas: modul belajar. Bawah: kuis dikelompokkan per pelajaran, tiap latihan berupa tautan langsung. */
+:root{
+  --bg:#EEF3FB;--card:#fff;--ink:#18213D;--muted:#58627F;--line:#D3DBEE;--on:#fff;
+  --math:#2B56E0;--math-soft:#DCE6FF;--read:#CF3F29;--read-soft:#FFE0D9;
+  --write:#0E7F5A;--write-soft:#CFF1E2;--eng:#7C3FD6;--eng-soft:#EADCFF;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0F1629;--card:#192240;--ink:#EEF2FF;--muted:#A5B0D0;--line:#2B3862;--on:#0F1629;
+  --math:#86A5FF;--math-soft:#1F2D62;--read:#FF9582;--read-soft:#4B2822;
+  --write:#55D6A5;--write-soft:#143F39;--eng:#BE9BFF;--eng-soft:#34265F;color-scheme:dark}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:700 17px/1.5 'Nunito','Segoe UI',system-ui,sans-serif;
-padding:max(24px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px))}
-main{max-width:640px;margin:0 auto}
-h1{font:700 40px/1.1 'Fredoka',ui-rounded,system-ui,sans-serif;margin:0 0 6px}
-p{margin:0;color:var(--muted)}
-.list{display:grid;gap:14px;margin-top:24px}
-a.t{display:flex;flex-direction:column;gap:4px;padding:20px;border-radius:24px;text-decoration:none;color:var(--ink);border:2px solid transparent}
-a.t:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
-a.t.g{background:var(--a-soft)}a.t.m{background:var(--b-soft)}
-a.t b{font:600 26px/1.2 'Fredoka',ui-rounded,system-ui,sans-serif}
-a.t.g b{color:var(--a)}a.t.m b{color:var(--b)}
-a.t span{color:var(--muted)}
+  padding-top:max(24px,env(safe-area-inset-top,0px));padding-bottom:56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:720px;margin:0 auto}
+h1,h2,h3,p{margin:0}
+h1{font:700 42px/1.1 'Fredoka',ui-rounded,system-ui,sans-serif}
+.lead{color:var(--muted);margin-top:6px}
+.k{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:30px 0 10px}
+a{color:inherit}
+a:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.modul{display:flex;align-items:center;gap:16px;padding:18px;border-radius:24px;background:var(--eng-soft);text-decoration:none}
+.modul .g{flex:none;width:64px;height:64px;border-radius:18px;background:var(--card);color:var(--eng);display:grid;place-items:center;font:700 22px 'Fredoka',ui-rounded,system-ui,sans-serif}
+.modul b{display:block;font:600 24px/1.2 'Fredoka',ui-rounded,system-ui,sans-serif}
+.modul span{color:var(--muted);font-size:15px}
+.grp{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:16px;margin-bottom:14px}
+.grp[data-s="math"]{--acc:var(--math);--soft:var(--math-soft)}
+.grp[data-s="read"]{--acc:var(--read);--soft:var(--read-soft)}
+.grp[data-s="write"]{--acc:var(--write);--soft:var(--write-soft)}
+.grp[data-s="eng"]{--acc:var(--eng);--soft:var(--eng-soft)}
+.gh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.gh h2{font:600 24px/1.2 'Fredoka',ui-rounded,system-ui,sans-serif;color:var(--acc)}
+.gh a{font-size:14px;font-weight:800;color:var(--muted)}
+.ls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ls a{display:flex;align-items:center;min-height:48px;padding:8px 14px;border-radius:14px;background:var(--soft);text-decoration:none;font-weight:800;font-size:16px;min-width:0;overflow-wrap:anywhere}
+.ls a:hover{outline:2px solid var(--acc)}
+@media (max-width:440px){h1{font-size:34px}.ls{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <main>
 <h1>Belajar Kelas 2</h1>
-<p>Pilih satu untuk mulai.</p>
-<div class="list">
-<a class="t g" href="ayo-belajar.html"><b>Ayo Belajar</b><span>Game kuis: matematika, membaca, menulis, bahasa Inggris</span></a>
-<a class="t m" href="modul-inggris.html"><b>Modul Bahasa Inggris</b><span>10 bab dengan kartu kata, suara, dan cek paham</span></a>
+<p class="lead">Baca modul dulu, lalu latihan lewat kuis.</p>
+
+<h2 class="k">Belajar</h2>
+<a class="modul" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><span><b>Modul Bahasa Inggris</b><span>10 bab dengan kartu kata, suara, dan cek paham</span></span></a>
+
+<h2 class="k">Kuis</h2>
+
+<section class="grp" data-s="math">
+<div class="gh"><h2>Matematika</h2><a href="ayo-belajar.html#math">Buka semua</a></div>
+<div class="ls">
+<a href="ayo-belajar.html#m-tambah">Tambah sampai 20</a>
+<a href="ayo-belajar.html#m-kurang">Kurang sampai 20</a>
+<a href="ayo-belajar.html#m-susun">Tambah &amp; kurang bersusun</a>
+<a href="ayo-belajar.html#m-tempat">Nilai tempat</a>
+<a href="ayo-belajar.html#m-banding">Banding bilangan</a>
+<a href="ayo-belajar.html#m-kali">Kelompok sama</a>
+<a href="ayo-belajar.html#m-cerita">Soal cerita</a>
+<a href="ayo-belajar.html#m-jam">Membaca jam</a>
 </div>
+</section>
+
+<section class="grp" data-s="read">
+<div class="gh"><h2>Membaca</h2><a href="ayo-belajar.html#read">Buka semua</a></div>
+<div class="ls">
+<a href="ayo-belajar.html#r-suku">Susun suku kata</a>
+<a href="ayo-belajar.html#r-kata">Baca kata</a>
+<a href="ayo-belajar.html#r-huruf">Huruf awal &amp; akhir</a>
+<a href="ayo-belajar.html#r-cerita">Baca dan jawab</a>
+</div>
+</section>
+
+<section class="grp" data-s="write">
+<div class="gh"><h2>Menulis</h2><a href="ayo-belajar.html#write">Buka semua</a></div>
+<div class="ls">
+<a href="ayo-belajar.html#w-huruf">Susun huruf</a>
+<a href="ayo-belajar.html#w-kalimat">Susun kalimat</a>
+<a href="ayo-belajar.html#w-kapital">Kapital &amp; tanda baca</a>
+<a href="ayo-belajar.html#w-lawan">Lawan kata</a>
+</div>
+</section>
+
+<section class="grp" data-s="eng">
+<div class="gh"><h2>Bahasa Inggris</h2><a href="ayo-belajar.html#eng">Buka semua</a></div>
+<div class="ls">
+<a href="ayo-belajar.html#e-gambar">Gambar ke kata</a>
+<a href="ayo-belajar.html#e-dengar">Dengar &amp; pilih</a>
+<a href="ayo-belajar.html#e-eja">Eja kata</a>
+<a href="ayo-belajar.html#e-arti">Arti kata</a>
+</div>
+</section>
 </main>
 </body>
 </html>

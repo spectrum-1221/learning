@@ -56,6 +56,7 @@ h1,h2,h3,p{margin:0}
 .side{display:flex;gap:8px;align-items:center}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:2px solid var(--line);font-weight:800;font-size:15px}
 .pill svg{width:20px;height:20px}
+a.pill{text-decoration:none;color:inherit}
 .subjects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .sub{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:18px 18px 16px;border-radius:24px;background:var(--soft);border:2px solid transparent;min-width:0;transition:transform .15s}
 .sub:hover{transform:translateY(-3px)}
@@ -608,7 +609,7 @@ var G=null;
 function renderHome(){
   S.screen='home';
   var h='<header class="top"><div><h1>Ayo Belajar</h1><p>Kelas 2 SD &middot; 10 menit sehari sudah cukup</p></div>'+
-    '<div class="side"><button class="pill" data-act="sound" aria-pressed="'+(save.sound?'true':'false')+'">Suara: '+(save.sound?'nyala':'mati')+'</button>'+
+    '<div class="side"><a class="pill" href="index.html">Menu utama</a><button class="pill" data-act="sound" aria-pressed="'+(save.sound?'true':'false')+'">Suara: '+(save.sound?'nyala':'mati')+'</button>'+
     '<span class="pill">'+starSvg(true)+totalStars()+'</span></div></header><div class="subjects">';
   SUBJECTS.forEach(function(s){
     var got=0;s.modes.forEach(function(m){got+=best(m.id)});
@@ -773,6 +774,11 @@ document.addEventListener('click',function(e){
     return judge(got===q.target.join(q.join));
   }
 });
-renderHome();
+var hs='';
+try{hs=(location.hash||'').replace('#','')}catch(e){}
+var mm=findMode(hs);
+if(mm){S.subject=mm.subject;startRound(mm)}
+else if(subj(hs))renderSubject(hs);
+else renderHome();
 })();
 </script>
