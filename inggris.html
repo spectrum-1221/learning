@@ -137,11 +137,45 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(-
 .dr .sp svg{width:20px;height:20px;fill:currentColor}
 .nosound{background:var(--amber-soft);border-radius:14px;padding:10px 14px;font-size:15px}
 
+
+/* kegiatan tambahan */
+.msg{border-radius:16px;padding:12px 16px;font-weight:800}
+.msg.good{background:var(--good-soft)}.msg.try{background:var(--amber-soft)}.msg.info{background:var(--acc-soft)}
+.qp{font:600 28px/1.25 var(--fd);overflow-wrap:anywhere}
+.qp.big{font-size:44px;color:var(--acc);text-align:center}
+.qv{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.qv .pic{font-size:96px;line-height:1.1}
+.qv .pic.txt{font:700 72px/1.1 var(--fd);color:var(--acc)}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.opts.wide{grid-template-columns:1fr}
+.opt{all:unset;box-sizing:border-box;cursor:pointer;min-height:64px;padding:8px 10px;border-radius:16px;border:3px solid var(--line);background:var(--card);font:600 22px/1.2 var(--fd);display:flex;align-items:center;justify-content:center;text-align:center;overflow-wrap:anywhere;min-width:0}
+.opt:hover:not(:disabled){border-color:var(--acc)}
+.opt:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.opts.emo .opt{font-size:52px;min-height:88px}
+.opts.wide .opt{font:700 20px/1.4 var(--fb);justify-content:flex-start;text-align:left;padding:12px 16px}
+.opt.correct{background:var(--good-soft);border-color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt.dim{opacity:.45}
+.say{text-align:center;color:var(--muted)}
+.blanks{text-align:center;font:700 34px/1.2 var(--fd);letter-spacing:.15em;color:var(--acc);overflow-wrap:anywhere}
+#dform{display:flex;gap:10px;flex-wrap:wrap}
+#dform .search{flex:1;min-width:150px}
+.ex{display:grid;gap:8px;list-style:none;padding:0;margin:0}
+.slots{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:64px;padding:10px;border-radius:18px;background:var(--acc-soft);border-bottom:4px solid var(--acc)}
+.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:52px}
+.tile2{all:unset;box-sizing:border-box;cursor:pointer;min-height:48px;padding:0 14px;border-radius:14px;background:var(--card);border:3px solid var(--acc);font:600 21px/1 var(--fd);display:inline-flex;align-items:center;justify-content:center;box-shadow:0 3px 0 var(--acc)}
+.tile2:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.tile2.ghost{visibility:hidden}
+.tile2.fin{background:var(--good-soft);border-color:var(--good);box-shadow:0 3px 0 var(--good);cursor:default}
+.phd{width:48px;height:48px;border-radius:14px;border:3px dashed var(--acc);opacity:.5}
 @media (max-width:480px){
   .head h1{font-size:26px}
   .fc .pic{font-size:92px}
   .fc .en{font-size:38px}
   .mc.pic{font-size:36px}
+  .opts{grid-template-columns:1fr}
+  .opts.emo{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .qp.big{font-size:38px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -163,8 +197,8 @@ var shuffle=function(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.flo
 
 /* penyimpanan: kata yang sudah dikuasai dan skor terbaik cocokkan */
 var KEY='inggris-kelas2';
-var store={known:{},match:{}};
-try{var raw=JSON.parse(localStorage.getItem(KEY));if(raw){store.known=raw.known||{};store.match=raw.match||{}}}catch(e){}
+var store={known:{},match:{},kuis:{},dikte:{},cerita:{},tata:{},kalimat:{}};
+try{var raw=JSON.parse(localStorage.getItem(KEY));if(raw){store.known=raw.known||{};store.match=raw.match||{};store.kuis=raw.kuis||{};store.dikte=raw.dikte||{};store.cerita=raw.cerita||{};store.tata=raw.tata||{};store.kalimat=raw.kalimat||{}}}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
 
 /* suara */
@@ -197,7 +231,7 @@ function topicPills(cur,act,only){
 }
 
 /* ---------- tampilan ---------- */
-var VIEWS=[['menu','Menu'],['alfabet','Alfabet'],['kartu','Kartu kilat'],['cocok','Cocokkan'],['cakap','Percakapan'],['kamus','Kamus gambar']];
+var VIEWS=[['menu','Menu'],['alfabet','Alfabet'],['kartu','Kartu kilat'],['cocok','Cocokkan'],['kuis','Kuis kata'],['dikte','Dikte'],['cerita','Cerita'],['tata','Tata bahasa'],['kalimat','Susun kalimat'],['cakap','Percakapan'],['kamus','Kamus gambar']];
 var view=$('#view'),cur='menu';
 var S={}; /* state per tampilan */
 
@@ -211,15 +245,16 @@ function route(){
   cur=VIEWS.some(function(v){return v[0]===h})?h:'menu';
   try{if(canSpeak)speechSynthesis.cancel()}catch(e){}
   renderNav();
-  ({menu:vMenu,alfabet:vAlfabet,kartu:vKartu,cocok:vCocok,cakap:vCakap,kamus:vKamus})[cur]();
+  R=null;
+  ({menu:vMenu,alfabet:vAlfabet,kartu:vKartu,cocok:vCocok,kuis:vKuis,dikte:vDikte,cerita:vCerita,tata:vTata,kalimat:vKalimat,cakap:vCakap,kamus:vKamus})[cur]();
   window.scrollTo(0,0);
 }
 
 function vMenu(){
-  var G=[['alfabet','A-Z','Alfabet','Huruf, nama huruf, dan kata contoh'],['kartu','Flip','Kartu kilat','Balik kartu, tandai kata yang sudah bisa'],['cocok','Pair','Cocokkan','Cari pasangan gambar dan kata'],['cakap','Chat','Percakapan','Dengar dan tirukan dialog pendek'],['kamus','Aa','Kamus gambar','Cari kata dan dengar suaranya']];
+  var G=[['alfabet','A-Z','Alfabet','Huruf, nama huruf, dan kata contoh'],['kartu','Flip','Kartu kilat','Balik kartu, tandai kata yang sudah bisa'],['cocok','Pair','Cocokkan','Cari pasangan gambar dan kata'],['cakap','Chat','Percakapan','Dengar dan tirukan dialog pendek'],['kamus','Aa','Kamus gambar','Cari kata dan dengar suaranya'],['kuis','Quiz','Kuis kata','10 soal dengan bintang'],['dikte','Spell','Dikte','Dengar lalu ketik katanya'],['cerita','Story','Cerita pendek','Baca, dengar, jawab'],['tata','a / an','Tata bahasa','Aturan mini dan latihan'],['kalimat','I am','Susun kalimat','Urutkan kata jadi kalimat']];
   var h='<h2>Mau latihan apa?</h2><p class="lead">Semua kegiatan memakai suara. Dengarkan dulu, lalu tirukan keras-keras.</p>'+(canSpeak?'':NOSND)+'<div class="tiles">';
   G.forEach(function(g){h+='<a class="tile" href="#'+g[0]+'"><span class="g" aria-hidden="true">'+g[1]+'</span><b>'+g[2]+'</b><span class="s">'+g[3]+'</span></a>'});
-  h+='<a class="tile" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><b>Modul</b><span class="s">Bab belajar dan cek paham</span></a></div>';
+  h+='<a class="tile" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><b>Modul</b><span class="s">Bab belajar dan cek paham</span></a><a class="tile" href="ayo-belajar.html#eng"><span class="g" aria-hidden="true">Star</span><b>Kuis bintang</b><span class="s">4 latihan bahasa Inggris</span></a></div>';
   view.innerHTML=h;
 }
 
@@ -342,6 +377,311 @@ function drawDict(){
   $('#dict').innerHTML=out||'<li class="note">Kata tidak ditemukan. Coba ketik kata lain.</li>';
   $('#qc').textContent=n+' kata';
 }
+
+
+/* ===== kegiatan tambahan: kuis kata, dikte, cerita, tata bahasa, susun kalimat ===== */
+function stars3(score,total){var r=total?score/total:0;return r>=0.85?3:(r>=0.6?2:1)}
+function tpill(label,act,id,sel){return '<button class="tp" data-act="'+act+'" data-id="'+id+'" aria-pressed="'+(sel?'true':'false')+'">'+label+'</button>'}
+function starTxt(n){return n?' · '+n+'★':''}
+function topicWords(id){
+  var r=[];
+  K.topics.forEach(function(t){if(id==='all'||t.id===id)t.items.forEach(function(w){r.push({t:t,w:w})})});
+  return r;
+}
+function pickN(a,n){var s=shuffle(a),out=[];for(var i=0;i<n;i++)out.push(s[i%s.length]);return out}
+function shuffleDiff(a){var s=shuffle(a),n=0;while(s.join('|')===a.join('|')&&n<20){s=shuffle(a);n++}return s}
+function scrollRun(){var el=$('#run');try{if(el)el.scrollIntoView({block:'start',behavior:'smooth'})}catch(e){}}
+
+/* pelari soal pilihan ganda */
+var R=null;
+function runStart(qs,meta){
+  R={qs:qs,i:0,score:0,tries:0,state:'ask',wrong:{},fb:null,meta:meta,missed:[]};
+  runDraw();scrollRun();
+  if(qs[0]&&qs[0].auto)say(qs[0].auto);
+}
+function resultHtml(run,total,againAct){
+  var n=stars3(run.score,total);
+  var h='<div class="res">'+stars(n)+'<h3>'+run.score+' dari '+total+' benar di percobaan pertama</h3>';
+  if(run.missed.length){
+    h+='<p class="note">Kata yang perlu diulang. Tekan untuk mendengar:</p><div class="tabs2" style="justify-content:center">';
+    run.missed.forEach(function(w){h+='<button class="tp" data-act="hsay" data-t="'+esc(w)+'">'+esc(w)+'</button>'});
+    h+='</div>';
+  }
+  return h+'<div class="row" style="justify-content:center"><button class="btn" data-act="'+againAct+'">Main lagi</button></div></div>';
+}
+function runDraw(){
+  var el=$('#run');if(!el||!R)return;
+  if(R.i>=R.qs.length){el.innerHTML=R.meta.finish();return}
+  var q=R.qs[R.i];
+  var h='<div class="stat"><span>Soal '+(R.i+1)+' dari '+R.qs.length+'</span><span>Benar: '+R.score+'</span></div><span class="meter" aria-hidden="true"><i style="width:'+Math.round(R.i/R.qs.length*100)+'%"></i></span>';
+  h+='<h3 class="qp'+(q.big?' big':'')+'">'+esc(q.prompt)+'</h3>';
+  if(q.sub)h+='<p class="note">'+esc(q.sub)+'</p>';
+  if(q.visual)h+='<div class="qv">'+q.visual+'</div>';
+  if(q.speak&&canSpeak)h+='<div class="row"><button class="btn alt" data-act="rhear">'+SPK+esc(q.speakLabel||'Dengar')+'</button></div>';
+  h+='<div class="opts '+(q.optClass||'')+'">';
+  q.opts.forEach(function(o,i){
+    var c='opt',dis=false;
+    if(R.state!=='ask'){dis=true;c+=o.v===q.ans?' correct':(R.wrong[o.v]?' wrong':' dim')}
+    else if(R.wrong[o.v]){c+=' wrong';dis=true}
+    h+='<button class="'+c+'" data-act="ropt" data-i="'+i+'"'+(dis?' disabled':'')+'>'+o.h+'</button>';
+  });
+  h+='</div>';
+  if(R.fb){
+    h+='<div class="msg '+R.fb.k+'" role="status">'+esc(R.fb.t)+'</div>';
+    if(R.state!=='ask')h+='<div class="row"><button class="btn" data-act="rnext">'+(R.i===R.qs.length-1?'Selesai':'Lanjut')+'</button></div>';
+  }
+  el.innerHTML=h;
+}
+function runAnswer(i){
+  var q=R.qs[R.i],o=q.opts[i];
+  if(o.v===q.ans){
+    if(R.tries===0)R.score++;
+    R.state='right';
+    R.fb={k:'good',t:(R.tries===0?'Benar! ':'Benar, kali ini berhasil. ')+(q.explain||'')};
+    if(q.after)say(q.after);
+  }else{
+    if(R.tries===0&&q.word)R.missed.push(q.word);
+    R.tries++;R.wrong[o.v]=true;
+    if(R.tries>=2){R.state='reveal';R.fb={k:'try',t:'Tidak apa-apa. '+(q.explain||'')};if(q.after)say(q.after)}
+    else R.fb={k:'try',t:'Belum tepat. Petunjuk: '+(q.hint||'Coba sekali lagi.')};
+  }
+  runDraw();
+}
+function runNext(){
+  R.i++;R.tries=0;R.state='ask';R.wrong={};R.fb=null;
+  runDraw();
+  var q=R.qs[R.i];if(q&&q.auto)say(q.auto);
+}
+
+/* kuis kata */
+function vKuis(){S.z=S.z||{topic:'all'};drawKuis()}
+function drawKuis(){
+  var z=S.z;
+  var h='<h2>Kuis kata</h2><p class="lead">Pilih topik, lalu jawab 10 soal. Kamu bisa dapat 1 sampai 3 bintang.</p><div class="tabs2" role="group" aria-label="Pilih topik">';
+  h+=tpill('Semua topik'+starTxt(store.kuis.all),'zt','all',z.topic==='all');
+  K.topics.forEach(function(t){h+=tpill(esc(t.name)+starTxt(store.kuis[t.id]),'zt',t.id,z.topic===t.id)});
+  view.innerHTML=h+'</div><div class="row"><button class="btn" data-act="zstart">Mulai kuis</button></div><div id="run"></div>'+(canSpeak?'':NOSND);
+}
+function buildWordQ(pool,it,type){
+  var w=it.w,t=it.t;
+  var same=shuffle(pool.filter(function(x){return x.t.id===t.id&&x.w[0]!==w[0]}));
+  var other=shuffle(pool.filter(function(x){return x.t.id!==t.id}));
+  var cands=same.concat(other);
+  var key={pic2en:function(x){return x.w[0]},en2id:function(x){return x.w[1]},id2en:function(x){return x.w[0]},hear:function(x){return x.w[2]}}[type];
+  var ans=key(it),vals=[ans];
+  for(var i=0;i<cands.length&&vals.length<3;i++){var v=key(cands[i]);if(vals.indexOf(v)<0)vals.push(v)}
+  var q={opts:shuffle(vals).map(function(v){return {v:v,h:esc(v)}}),ans:ans,word:w[0],explain:w[0]+' = '+w[1]+' (cara baca: '+w[3]+')',after:w[0],hint:'Kata ini diawali huruf "'+w[0][0]+'".'};
+  if(type==='pic2en'){q.prompt='Apa bahasa Inggrisnya?';q.visual='<span class="pic'+(t.text?' txt':'')+'" aria-hidden="true">'+esc(w[2])+'</span>'}
+  else if(type==='en2id'){q.prompt=w[0];q.big=true;q.speak=w[0]}
+  else if(type==='id2en'){q.prompt='Bahasa Inggris dari "'+w[1]+'" adalah ...'}
+  else{q.prompt='Dengarkan, lalu pilih gambarnya';q.speak=w[0];q.speakLabel='Dengar lagi';q.auto=w[0];q.optClass=t.text?'':'emo';q.hint='Tekan dengar lagi dan perhatikan bunyi pertamanya.'}
+  return q;
+}
+function wordQuestions(topicId,n){
+  var pool=topicWords(topicId),picks=pickN(pool,n),types=canSpeak?['pic2en','en2id','id2en','hear']:['pic2en','en2id','id2en'],order=[],qs=[];
+  for(var i=0;i<n;i++){if(i%types.length===0)order=shuffle(types);qs.push(buildWordQ(pool,picks[i],order[i%types.length]))}
+  return qs;
+}
+
+/* dikte */
+function vDikte(){S.x=S.x||{topic:'all',run:null};S.x.run=null;drawDikte()}
+function dictPool(id){return topicWords(id).filter(function(x){return /^[a-z]+$/i.test(x.w[0])})}
+function blanks(len,first){var a=[];for(var i=0;i<len;i++)a.push(i===0&&first?first:'_');return a.join(' ')}
+function drawDikte(){
+  var x=S.x,run=x.run,h;
+  if(!run){
+    h='<h2>Dikte kata</h2><p class="lead">Dengarkan katanya, lalu ketik. Kalau salah, kamu dapat petunjuk huruf pertama dan gambar.</p><div class="tabs2" role="group" aria-label="Pilih topik">';
+    h+=tpill('Semua topik'+starTxt(store.dikte.all),'xt','all',x.topic==='all');
+    K.topics.forEach(function(t){if(dictPool(t.id).length>=4)h+=tpill(esc(t.name)+starTxt(store.dikte[t.id]),'xt',t.id,x.topic===t.id)});
+    view.innerHTML=h+'</div><div class="row"><button class="btn" data-act="xstart">Mulai dikte</button></div>'+(canSpeak?'':'<p class="nosound">Perangkat ini belum bisa mengeluarkan suara, jadi gambar ditampilkan sebagai petunjuk.</p>');
+    return;
+  }
+  if(run.i>=run.qs.length){
+    var n=stars3(run.score,run.qs.length);
+    if(n>(store.dikte[x.topic]||0)){store.dikte[x.topic]=n;persist()}
+    view.innerHTML='<h2>Dikte kata</h2>'+resultHtml(run,run.qs.length,'xstart');
+    return;
+  }
+  var it=run.qs[run.i],en=it.w[0],showPic=!canSpeak||run.tries>=1||run.state!=='ask',done=run.state!=='ask';
+  h='<h2>Dikte kata</h2><div class="stat"><span>Kata '+(run.i+1)+' dari '+run.qs.length+'</span><span>Benar: '+run.score+'</span></div><span class="meter" aria-hidden="true"><i style="width:'+Math.round(run.i/run.qs.length*100)+'%"></i></span>';
+  if(canSpeak)h+='<div class="row" style="justify-content:center"><button class="btn" data-act="xhear">'+SPK+'Dengar katanya</button></div>';
+  h+='<div class="blanks" aria-live="polite">'+(done?esc(en.split('').join(' ')):blanks(en.length,run.tries>=1?en[0]:''))+'</div>';
+  if(showPic)h+='<div class="qv"><span class="pic'+(it.t.text?' txt':'')+'" aria-hidden="true">'+esc(it.w[2])+'</span></div><p class="say">'+esc(it.w[1])+'</p>';
+  h+='<form id="dform" autocomplete="off"><input class="search" id="dk" type="text" inputmode="text" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="24" aria-label="Ketik katanya"'+(done?' disabled value="'+esc(en)+'"':'')+'><button class="btn" type="submit"'+(done?' disabled':'')+'>Periksa</button></form>';
+  if(run.fb){
+    h+='<div class="msg '+run.fb.k+'" role="status">'+esc(run.fb.t)+'</div>';
+    if(done)h+='<div class="row"><button class="btn" data-act="xnext">'+(run.i===run.qs.length-1?'Selesai':'Lanjut')+'</button></div>';
+  }
+  view.innerHTML=h;
+  var inp=$('#dk');if(inp&&!done)inp.focus();
+}
+function dikteSubmit(){
+  var run=S.x.run;if(!run||run.state!=='ask')return;
+  var it=run.qs[run.i],en=it.w[0],got=($('#dk').value||'').trim().toLowerCase();
+  if(!got)return;
+  if(got===en.toLowerCase()){
+    if(run.tries===0)run.score++;
+    run.state='right';run.fb={k:'good',t:(run.tries===0?'Benar! ':'Benar, kali ini berhasil. ')+en+' = '+it.w[1]+'.'};
+    say(en);
+  }else{
+    if(run.tries===0)run.missed.push(en);
+    run.tries++;
+    if(run.tries>=2){run.state='reveal';run.fb={k:'try',t:'Tidak apa-apa. Katanya: '+en+' ('+it.w[3]+').'};say(en)}
+    else run.fb={k:'try',t:'Belum tepat. Petunjuk: huruf pertamanya "'+en[0]+'" dan ada '+en.length+' huruf. Lihat gambarnya.'};
+  }
+  drawDikte();
+}
+
+/* cerita pendek */
+function vCerita(){S.s=S.s||{id:K.stories[0].id,hide:false};drawCerita()}
+function curStory(){var r=K.stories[0];K.stories.forEach(function(x){if(x.id===S.s.id)r=x});return r}
+function drawCerita(){
+  var st=curStory(),h='<h2>Cerita pendek</h2><div class="tabs2" role="group" aria-label="Pilih cerita">';
+  K.stories.forEach(function(x){h+=tpill(esc(x.emoji+' '+x.title)+(store.cerita[x.id]?' ✓':''),'cs',x.id,x.id===st.id)});
+  h+='</div><div class="row">'+(canSpeak?'<button class="btn" data-act="sall">'+SPK+'Bacakan cerita</button>':'')+'<button class="btn alt" data-act="shide">'+(S.s.hide?'Tampilkan artinya':'Sembunyikan artinya')+'</button></div><div class="bubbles" id="sbub">';
+  st.lines.forEach(function(l,i){
+    h+='<button class="bb l" data-act="sline" data-i="'+i+'"><span class="e">'+esc(l[0])+'</span>'+(S.s.hide?'':'<span class="i">'+esc(l[1])+'</span>')+'</button>';
+  });
+  h+='</div><div class="row"><button class="btn good" data-act="sq">Jawab pertanyaan</button></div><div id="run"></div>'+(canSpeak?'':NOSND);
+  view.innerHTML=h;
+}
+function markStory(i){var els=document.querySelectorAll('#sbub .bb');for(var k=0;k<els.length;k++)els[k].classList.toggle('on',k===i)}
+function storyQs(st){
+  return st.qs.map(function(q){
+    return {prompt:q[0],sub:q[1],speak:q[0],speakLabel:'Dengar pertanyaan',opts:shuffle([q[2]].concat(q[3])).map(function(v){return {v:v,h:esc(v)}}),ans:q[2],optClass:'wide',
+      hint:'Baca lagi ceritanya pelan-pelan dan cari kalimat yang menjawab.',explain:'Jawabannya: '+q[2]+'.',after:q[2]};
+  });
+}
+
+/* tata bahasa */
+function vTata(){S.t=S.t||{id:K.grammar[0].id};drawTata()}
+function curLesson(){var r=K.grammar[0];K.grammar.forEach(function(x){if(x.id===S.t.id)r=x});return r}
+function drawTata(){
+  var g=curLesson(),h='<h2>Tata bahasa</h2><div class="tabs2" role="group" aria-label="Pilih pelajaran">';
+  K.grammar.forEach(function(x){h+=tpill(esc(x.title)+starTxt(store.tata[x.id]),'ts',x.id,x.id===g.id)});
+  h+='</div><div class="msg info"><b>'+esc(g.title)+'</b><br>'+esc(g.rule)+'</div><ul class="ex">';
+  g.examples.forEach(function(e){h+='<li><button class="dr" data-act="dsay" data-t="'+esc(e[0])+'"><span class="t"><b>'+esc(e[0])+'</b><span>'+esc(e[1])+'</span></span>'+(canSpeak?'<span class="sp">'+SPK+'</span>':'')+'</button></li>'});
+  view.innerHTML=h+'</ul><div class="row"><button class="btn" data-act="tstart">Mulai latihan</button></div><div id="run"></div>'+(canSpeak?'':NOSND);
+}
+function grammarQs(g){
+  return shuffle(g.items).slice(0,6).map(function(it){
+    var filled=it[0].replace('___',it[2]).replace(/^\([^)]*\)\s*/,'');
+    return {prompt:it[0],big:it[0].length<=14,opts:shuffle(it[1]).map(function(v){return {v:v,h:esc(v)}}),ans:it[2],hint:it[3],explain:it[3]+' Kalimat lengkap: '+filled,after:filled};
+  });
+}
+
+/* susun kalimat */
+function vKalimat(){S.y=S.y||{run:null};S.y.run=null;drawKalimat()}
+function startKalimat(){
+  var qs=shuffle(K.sentences).slice(0,8).map(function(s){var ws=s[0].split(' ');return {en:s[0],id:s[1],words:ws,tiles:shuffleDiff(ws)}});
+  S.y.run={qs:qs,i:0,score:0,tries:0,state:'ask',placed:[],fb:null,missed:[]};
+  drawKalimat();
+}
+function drawKalimat(){
+  var run=S.y.run,h;
+  if(!run){
+    view.innerHTML='<h2>Susun kalimat</h2><p class="lead">Urutkan kata-kata menjadi kalimat yang benar. Artinya ditulis sebagai petunjuk.</p><div class="row"><button class="btn" data-act="ystart">Mulai (8 kalimat)</button></div>';
+    return;
+  }
+  if(run.i>=run.qs.length){
+    var n=stars3(run.score,run.qs.length);
+    if(n>(store.kalimat.all||0)){store.kalimat.all=n;persist()}
+    view.innerHTML='<h2>Susun kalimat</h2>'+resultHtml(run,run.qs.length,'ystart');
+    return;
+  }
+  var q=run.qs[run.i],done=run.state!=='ask',total=q.words.length,i;
+  h='<h2>Susun kalimat</h2><div class="stat"><span>Kalimat '+(run.i+1)+' dari '+run.qs.length+'</span><span>Benar: '+run.score+'</span></div><span class="meter" aria-hidden="true"><i style="width:'+Math.round(run.i/run.qs.length*100)+'%"></i></span>';
+  h+='<p class="lead">Artinya: <b style="color:var(--ink)">'+esc(q.id)+'</b></p><div class="slots" id="slots">';
+  for(i=0;i<total;i++){
+    if(i<run.placed.length)h+='<button class="tile2'+(run.state==='right'?' fin':'')+'" data-act="yun" data-p="'+i+'"'+(done?' disabled':'')+'>'+esc(q.tiles[run.placed[i]])+'</button>';
+    else h+='<span class="phd"></span>';
+  }
+  h+='</div><div class="bank">';
+  q.tiles.forEach(function(t,idx){h+=run.placed.indexOf(idx)>=0?'<span class="tile2 ghost">'+esc(t)+'</span>':'<button class="tile2" data-act="ypl" data-i="'+idx+'"'+(done?' disabled':'')+'>'+esc(t)+'</button>'});
+  h+='</div>';
+  if(!done)h+='<div class="row"><button class="btn" data-act="ycheck"'+(run.placed.length===total?'':' disabled')+'>Periksa</button><button class="btn alt" data-act="yclear">Ulangi</button>'+(canSpeak&&run.tries>=1?'<button class="btn alt" data-act="yhear">'+SPK+'Dengar kalimatnya</button>':'')+'</div>';
+  if(run.fb){
+    h+='<div class="msg '+run.fb.k+'" role="status">'+esc(run.fb.t)+'</div>';
+    if(done)h+='<div class="row"><button class="btn" data-act="ynext">'+(run.i===run.qs.length-1?'Selesai':'Lanjut')+'</button></div>';
+  }
+  view.innerHTML=h;
+}
+function kalimatOrder(q){
+  var used={},out=[];
+  q.words.forEach(function(w){for(var i=0;i<q.tiles.length;i++){if(!used[i]&&q.tiles[i]===w){used[i]=1;out.push(i);break}}});
+  return out;
+}
+
+/* ---------- aksi untuk kegiatan tambahan ---------- */
+document.addEventListener('submit',function(e){
+  if(e.target&&e.target.id==='dform'){e.preventDefault();dikteSubmit()}
+});
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-act]');if(!t)return;
+  var a=t.getAttribute('data-act'),id=t.getAttribute('data-id'),i=Number(t.getAttribute('data-i'));
+  if(a==='hsay')return say(t.getAttribute('data-t'));
+  if(a==='ropt'){if(R&&R.state==='ask')runAnswer(i);return}
+  if(a==='rnext'){if(R)runNext();return}
+  if(a==='rhear'){var rq=R&&R.qs[R.i];if(rq&&rq.speak)say(rq.speak);return}
+  /* kuis kata */
+  if(a==='zt'){S.z.topic=id;return drawKuis()}
+  if(a==='zstart'){
+    runStart(wordQuestions(S.z.topic,10),{finish:function(){var n=stars3(R.score,R.qs.length);if(n>(store.kuis[S.z.topic]||0)){store.kuis[S.z.topic]=n;persist()}return resultHtml(R,R.qs.length,'zstart')}});
+    return;
+  }
+  /* dikte */
+  if(a==='xt'){S.x.topic=id;return drawDikte()}
+  if(a==='xstart'){
+    var pool=dictPool(S.x.topic);
+    S.x.run={qs:pickN(pool,8),i:0,score:0,tries:0,state:'ask',fb:null,missed:[]};
+    drawDikte();
+    if(canSpeak)say(S.x.run.qs[0].w[0]);
+    return;
+  }
+  if(a==='xhear'){var xr=S.x.run;if(xr)say(xr.qs[xr.i].w[0]);return}
+  if(a==='xnext'){var r2=S.x.run;r2.i++;r2.tries=0;r2.state='ask';r2.fb=null;drawDikte();if(r2.i<r2.qs.length)say(r2.qs[r2.i].w[0]);return}
+  /* cerita */
+  if(a==='cs'){S.s.id=id;R=null;return drawCerita()}
+  if(a==='shide'){S.s.hide=!S.s.hide;R=null;return drawCerita()}
+  if(a==='sline'){var st=curStory();markStory(i);return say(st.lines[i][0],null,function(){markStory(-1)})}
+  if(a==='sall'){var st2=curStory();return say(st2.lines.map(function(l){return l[0]}),function(k){markStory(k)},function(){markStory(-1)})}
+  if(a==='sq'){
+    var st3=curStory();
+    runStart(storyQs(st3),{finish:function(){var v=1+R.score;if(v>(store.cerita[st3.id]||0)){store.cerita[st3.id]=v;persist()}return resultHtml(R,R.qs.length,'sq')}});
+    return;
+  }
+  /* tata bahasa */
+  if(a==='ts'){S.t.id=id;R=null;return drawTata()}
+  if(a==='tstart'){
+    var g=curLesson();
+    runStart(grammarQs(g),{finish:function(){var n=stars3(R.score,R.qs.length);if(n>(store.tata[g.id]||0)){store.tata[g.id]=n;persist()}return resultHtml(R,R.qs.length,'tstart')}});
+    return;
+  }
+  /* susun kalimat */
+  if(a==='ystart'){startKalimat();return}
+  var yr=S.y&&S.y.run;
+  if(yr&&yr.i<yr.qs.length){
+    var q=yr.qs[yr.i];
+    if(a==='ypl'&&yr.state==='ask'){if(yr.placed.length<q.words.length){yr.placed.push(i);yr.fb=null;drawKalimat()}return}
+    if(a==='yun'&&yr.state==='ask'){yr.placed.splice(Number(t.getAttribute('data-p')),1);yr.fb=null;drawKalimat();return}
+    if(a==='yclear'&&yr.state==='ask'){yr.placed=[];yr.fb=null;drawKalimat();return}
+    if(a==='yhear'){say(q.en);return}
+    if(a==='ycheck'&&yr.state==='ask'){
+      var got=yr.placed.map(function(k){return q.tiles[k]}).join(' ');
+      if(got===q.en){
+        if(yr.tries===0)yr.score++;
+        yr.state='right';yr.fb={k:'good',t:(yr.tries===0?'Benar! ':'Benar, kali ini berhasil. ')+q.en};say(q.en);
+      }else{
+        if(yr.tries===0)yr.missed.push(q.words[0]);
+        yr.tries++;
+        if(yr.tries>=2){yr.state='reveal';yr.placed=kalimatOrder(q);yr.fb={k:'try',t:'Tidak apa-apa. Kalimat yang benar: '+q.en};say(q.en)}
+        else{yr.fb={k:'try',t:'Belum tepat. Petunjuk: kalimat diawali kata "'+q.words[0]+'". Tekan Ulangi untuk menyusun lagi.'}}
+      }
+      return drawKalimat();
+    }
+    if(a==='ynext'){yr.i++;yr.tries=0;yr.state='ask';yr.placed=[];yr.fb=null;return drawKalimat()}
+  }
+});
 
 /* ---------- aksi ---------- */
 document.addEventListener('input',function(e){

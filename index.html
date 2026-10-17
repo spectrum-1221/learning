@@ -207,6 +207,11 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
       <a class="si" data-s="eng" href="inggris.html#alfabet"><span class="dot"></span>Alfabet</a>
       <a class="si" data-s="eng" href="inggris.html#kartu"><span class="dot"></span>Kartu kilat</a>
       <a class="si" data-s="eng" href="inggris.html#cocok"><span class="dot"></span>Cocokkan</a>
+      <a class="si" data-s="eng" href="inggris.html#kuis"><span class="dot"></span>Kuis kata</a>
+      <a class="si" data-s="eng" href="inggris.html#dikte"><span class="dot"></span>Dikte</a>
+      <a class="si" data-s="eng" href="inggris.html#cerita"><span class="dot"></span>Cerita pendek</a>
+      <a class="si" data-s="eng" href="inggris.html#tata"><span class="dot"></span>Tata bahasa</a>
+      <a class="si" data-s="eng" href="inggris.html#kalimat"><span class="dot"></span>Susun kalimat</a>
       <a class="si" data-s="eng" href="inggris.html#cakap"><span class="dot"></span>Percakapan</a>
       <a class="si" data-s="eng" href="inggris.html#kamus"><span class="dot"></span>Kamus gambar</a>
     </nav>
@@ -316,7 +321,7 @@ function renderMatematika(){
 }
 function renderInggris(){
   var wk=wordsKnown(),wt=wordsTotal();
-  var G=[['alfabet','A-Z','Alfabet','Huruf dan bunyinya'],['kartu','Flip','Kartu kilat','Balik kartu, tandai yang sudah bisa'],['cocok','Pair','Cocokkan','Pasangkan gambar dan kata'],['cakap','Chat','Percakapan','Dengar dan tirukan'],['kamus','Aa','Kamus gambar','Cari kata, dengar suaranya']];
+  var G=[['alfabet','A-Z','Alfabet','Huruf dan bunyinya'],['kartu','Flip','Kartu kilat','Balik kartu, tandai yang sudah bisa'],['cocok','Pair','Cocokkan','Pasangkan gambar dan kata'],['cakap','Chat','Percakapan','Dengar dan tirukan'],['kamus','Aa','Kamus gambar','Cari kata, dengar suaranya'],['kuis','Quiz','Kuis kata','10 soal, dapat bintang'],['dikte','Spell','Dikte','Dengar lalu ketik'],['cerita','Story','Cerita pendek','Baca, dengar, jawab'],['tata','a / an','Tata bahasa','Aturan mini dan latihan'],['kalimat','I am','Susun kalimat','Urutkan kata']];
   var h='<div class="sec"><a class="hero" data-s="eng" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><b>Modul Bahasa Inggris</b><span>Kartu kata bergambar, suara, kalimat contoh, dan cek paham di setiap bab.</span>'+meter(chDone(),CH.length)+'<span>'+chDone()+' dari '+CH.length+' bab selesai</span></a></div>';
   h+='<div class="sec" data-s="eng"><h2>Permainan dan latihan</h2><div class="tiles two">';
   G.forEach(function(g){h+='<a class="tile b" href="inggris.html#'+g[0]+'"><span class="g" aria-hidden="true">'+g[1]+'</span><b>'+g[2]+'</b><span class="pr">'+g[3]+'</span></a>'});
@@ -342,12 +347,16 @@ function renderKuis(){
   });
   $('#p-kuis').innerHTML=h;
 }
+function engStore(){var o=load('inggris-kelas2')||{};return {cerita:o.cerita||{},tata:o.tata||{}}}
+function cnt(o){var n=0;for(var k in o)if(o[k])n++;return n}
 function renderProgres(){
   var g=0,t=0;SUBJ.forEach(function(s){var st=stat(s);g+=st.g;t+=st.t});
   var h='<div class="card"><div class="big">'+g+' <small>dari '+t+' bintang</small></div>'+meter(g,t);
   SUBJ.forEach(function(s){var st=stat(s);h+='<div class="pbar" data-s="'+s.id+'"><b>'+esc(s.name)+'</b>'+meter(st.g,st.t)+'<span>'+st.g+'/'+st.t+'</span></div>'});
   h+='<div class="pbar" data-s="eng"><b>Modul Inggris</b>'+meter(chDone(),CH.length)+'<span>'+chDone()+'/'+CH.length+' bab</span></div>';
   var ms2=mathStore();h+='<div class="pbar" data-s="math"><b>Tantangan mtk</b><span class="meter" aria-hidden="true"><i style="width:'+Math.min(100,(ms2.jam+ms2.nilai+ms2.bangun)*10)+'%"></i></span><span>'+(ms2.jam+ms2.nilai+ms2.bangun)+' benar</span></div>';
+  var es=engStore(),nc=Math.min(cnt(es.cerita),6),nt=Math.min(cnt(es.tata),5);
+  h+='<div class="pbar" data-s="eng"><b>Cerita Inggris</b>'+meter(nc,6)+'<span>'+nc+'/6</span></div><div class="pbar" data-s="eng"><b>Tata bahasa</b>'+meter(nt,5)+'<span>'+nt+'/5</span></div>';
   h+='<div class="pbar" data-s="eng"><b>Kata Inggris</b>'+meter(wordsKnown(),wordsTotal())+'<span>'+wordsKnown()+'/'+wordsTotal()+'</span></div></div>';
   var redo=[];
   SUBJ.forEach(function(s){s.modes.forEach(function(m){if(b(m[0])<2)redo.push({s:s,m:m,v:b(m[0])})})});
