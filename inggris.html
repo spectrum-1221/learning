@@ -168,6 +168,29 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(-
 .tile2.ghost{visibility:hidden}
 .tile2.fin{background:var(--good-soft);border-color:var(--good);box-shadow:0 3px 0 var(--good);cursor:default}
 .phd{width:48px;height:48px;border-radius:14px;border:3px dashed var(--acc);opacity:.5}
+
+/* rapi: kelompok menu */
+:root{--warm:#9A5200}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--warm:var(--amber)}}
+:root[data-theme="dark"]{--warm:var(--amber)}
+.grp{display:flex;flex-direction:column;gap:10px}
+.grp h3{font:800 13px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.grp .tile{position:relative;padding:14px;gap:2px}
+.grp .tile .g{font-size:28px;min-height:34px}
+.grp .tile b{font-size:19px}
+.grp.gb .tile{background:var(--amber-soft)}.grp.gb .tile .g{color:var(--warm)}
+.grp.gc .tile{background:var(--good-soft)}.grp.gc .tile .g{color:var(--good)}
+.grp.gd .tile{background:var(--bg);border:2px solid var(--line)}
+.tile:hover{filter:brightness(.97)}
+.tile:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.badge{position:absolute;top:10px;right:10px;font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--card);color:var(--ink);border:2px solid var(--line)}
+.panel{gap:20px}
+@media (min-width:700px){
+  .chips{flex-wrap:wrap;overflow:visible}
+  .wrap{max-width:860px}
+  .panel{padding:24px 24px 28px}
+  .grp .tiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
 @media (max-width:480px){
   .head h1{font-size:26px}
   .fc .pic{font-size:92px}
@@ -251,10 +274,21 @@ function route(){
 }
 
 function vMenu(){
-  var G=[['alfabet','A-Z','Alfabet','Huruf, nama huruf, dan kata contoh'],['kartu','Flip','Kartu kilat','Balik kartu, tandai kata yang sudah bisa'],['cocok','Pair','Cocokkan','Cari pasangan gambar dan kata'],['cakap','Chat','Percakapan','Dengar dan tirukan dialog pendek'],['kamus','Aa','Kamus gambar','Cari kata dan dengar suaranya'],['kuis','Quiz','Kuis kata','10 soal dengan bintang'],['dikte','Spell','Dikte','Dengar lalu ketik katanya'],['cerita','Story','Cerita pendek','Baca, dengar, jawab'],['tata','a / an','Tata bahasa','Aturan mini dan latihan'],['kalimat','I am','Susun kalimat','Urutkan kata jadi kalimat']];
-  var h='<h2>Mau latihan apa?</h2><p class="lead">Semua kegiatan memakai suara. Dengarkan dulu, lalu tirukan keras-keras.</p>'+(canSpeak?'':NOSND)+'<div class="tiles">';
-  G.forEach(function(g){h+='<a class="tile" href="#'+g[0]+'"><span class="g" aria-hidden="true">'+g[1]+'</span><b>'+g[2]+'</b><span class="s">'+g[3]+'</span></a>'});
-  h+='<a class="tile" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><b>Modul</b><span class="s">Bab belajar dan cek paham</span></a><a class="tile" href="ayo-belajar.html#eng"><span class="g" aria-hidden="true">Star</span><b>Kuis bintang</b><span class="s">4 latihan bahasa Inggris</span></a></div>';
+  var GR=[
+   ['Belajar kata','a',[['alfabet','A-Z','Alfabet','Huruf dan bunyinya'],['kartu','Flip','Kartu kilat','Balik kartu, tandai yang bisa'],['kamus','Aa','Kamus gambar','Cari kata, dengar suaranya'],['cocok','Pair','Cocokkan','Pasangkan gambar dan kata']]],
+   ['Latihan dan kuis','b',[['kuis','Quiz','Kuis kata','10 soal, dapat bintang'],['dikte','Spell','Dikte','Dengar lalu ketik'],['kalimat','I am','Susun kalimat','Urutkan kata'],['tata','a / an','Tata bahasa','Aturan mini dan latihan']]],
+   ['Membaca dan bicara','c',[['cakap','Chat','Percakapan','Dengar dan tirukan'],['cerita','Story','Cerita pendek','Baca, dengar, jawab']]]
+  ];
+  var cnt=function(o){var n=0;for(var k in o)if(o[k])n++;return n};
+  var st=function(n){return n?n+' \u2605':''};
+  var info={kuis:st(store.kuis.all),dikte:st(store.dikte.all),kalimat:st(store.kalimat.all),cerita:cnt(store.cerita)?cnt(store.cerita)+'/'+K.stories.length:'',tata:cnt(store.tata)?cnt(store.tata)+'/'+K.grammar.length:'',kartu:cnt(store.known)?cnt(store.known)+' kata':''};
+  var h='<h2>Mau latihan apa?</h2><p class="lead">Dengarkan dulu, lalu tirukan keras-keras.</p>'+(canSpeak?'':NOSND);
+  GR.forEach(function(g){
+    h+='<section class="grp g'+g[1]+'"><h3>'+g[0]+'</h3><div class="tiles">';
+    g[2].forEach(function(t){h+='<a class="tile" href="#'+t[0]+'"><span class="g" aria-hidden="true">'+t[1]+'</span><b>'+t[2]+'</b><span class="s">'+t[3]+'</span>'+(info[t[0]]?'<span class="badge">'+info[t[0]]+'</span>':'')+'</a>'});
+    h+='</div></section>';
+  });
+  h+='<section class="grp gd"><h3>Lainnya</h3><div class="tiles"><a class="tile" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><b>Modul</b><span class="s">Bab belajar dan cek paham</span></a><a class="tile" href="ayo-belajar.html#eng"><span class="g" aria-hidden="true">Star</span><b>Kuis bintang</b><span class="s">4 latihan bahasa Inggris</span></a></div></section>';
   view.innerHTML=h;
 }
 

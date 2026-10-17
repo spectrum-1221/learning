@@ -136,6 +136,7 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 .tab[aria-current="page"]{color:var(--brand);background:var(--brand-soft)}
 
 
+.sub{font:800 13px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:18px 0 -8px}
 .tiles.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .tile.b{--soft:var(--brand-soft);--acc:var(--brand)}
 @media (min-width:860px){
@@ -321,11 +322,11 @@ function renderMatematika(){
 }
 function renderInggris(){
   var wk=wordsKnown(),wt=wordsTotal();
-  var G=[['alfabet','A-Z','Alfabet','Huruf dan bunyinya'],['kartu','Flip','Kartu kilat','Balik kartu, tandai yang sudah bisa'],['cocok','Pair','Cocokkan','Pasangkan gambar dan kata'],['cakap','Chat','Percakapan','Dengar dan tirukan'],['kamus','Aa','Kamus gambar','Cari kata, dengar suaranya'],['kuis','Quiz','Kuis kata','10 soal, dapat bintang'],['dikte','Spell','Dikte','Dengar lalu ketik'],['cerita','Story','Cerita pendek','Baca, dengar, jawab'],['tata','a / an','Tata bahasa','Aturan mini dan latihan'],['kalimat','I am','Susun kalimat','Urutkan kata']];
+  var GG=[['Belajar kata',[['alfabet','A-Z','Alfabet','Huruf dan bunyinya'],['kartu','Flip','Kartu kilat','Balik kartu, tandai yang sudah bisa'],['kamus','Aa','Kamus gambar','Cari kata, dengar suaranya'],['cocok','Pair','Cocokkan','Pasangkan gambar dan kata']]],['Latihan dan kuis',[['kuis','Quiz','Kuis kata','10 soal, dapat bintang'],['dikte','Spell','Dikte','Dengar lalu ketik'],['kalimat','I am','Susun kalimat','Urutkan kata'],['tata','a / an','Tata bahasa','Aturan mini dan latihan']]],['Membaca dan bicara',[['cakap','Chat','Percakapan','Dengar dan tirukan'],['cerita','Story','Cerita pendek','Baca, dengar, jawab']]]];
   var h='<div class="sec"><a class="hero" data-s="eng" href="modul-inggris.html"><span class="g" aria-hidden="true">Hi!</span><b>Modul Bahasa Inggris</b><span>Kartu kata bergambar, suara, kalimat contoh, dan cek paham di setiap bab.</span>'+meter(chDone(),CH.length)+'<span>'+chDone()+' dari '+CH.length+' bab selesai</span></a></div>';
-  h+='<div class="sec" data-s="eng"><h2>Permainan dan latihan</h2><div class="tiles two">';
-  G.forEach(function(g){h+='<a class="tile b" href="inggris.html#'+g[0]+'"><span class="g" aria-hidden="true">'+g[1]+'</span><b>'+g[2]+'</b><span class="pr">'+g[3]+'</span></a>'});
-  h+='</div><div class="card" style="margin-top:12px"><b>Kata yang sudah bisa</b><div class="big" style="font-size:30px;margin:4px 0 8px">'+wk+' <small>dari '+wt+' kata</small></div>'+meter(wk,wt)+'<p class="note">Tandai kata di Kartu kilat dengan tombol "Sudah bisa".</p></div></div>';
+  h+='<div class="sec" data-s="eng"><h2>Permainan dan latihan</h2>';
+  GG.forEach(function(gr){h+='<h3 class="sub">'+gr[0]+'</h3><div class="tiles two">';gr[1].forEach(function(g){h+='<a class="tile b" href="inggris.html#'+g[0]+'"><span class="g" aria-hidden="true">'+g[1]+'</span><b>'+g[2]+'</b><span class="pr">'+g[3]+'</span></a>'});h+='</div>'});
+  h+='<div class="card" style="margin-top:12px"><b>Kata yang sudah bisa</b><div class="big" style="font-size:30px;margin:4px 0 8px">'+wk+' <small>dari '+wt+' kata</small></div>'+meter(wk,wt)+'<p class="note">Tandai kata di Kartu kilat dengan tombol "Sudah bisa".</p></div></div>';
   h+='<div class="sec" data-s="eng"><h2>Kuis bahasa Inggris</h2><ul class="rows">';
   SUBJ[3].modes.forEach(function(m){h+='<li><a class="row" href="ayo-belajar.html#'+m[0]+'"><span class="t">'+esc(m[1])+'</span>'+rate(b(m[0]))+'</a></li>'});
   h+='</ul></div>';
